@@ -192,7 +192,13 @@
     font-weight:700; font-size:15px; color: var(--ink);
     flex-shrink:0;
     transition: transform .35s ease, box-shadow .35s ease, background .35s ease, border-color .35s ease;
-    cursor:default; position:relative;
+    cursor:pointer; position:relative;
+  }
+  .table-el:hover{ border-color: var(--gold); }
+  .table-el.vip{ border-color: var(--gold); box-shadow: inset 0 0 0 2px rgba(189,151,87,0.35); }
+  .table-el.vip::before{
+    content:"★"; position:absolute; top:-8px; right:-4px;
+    font-size:11px; color: var(--gold);
   }
   .table-el.highlight{
     background: var(--gold);
@@ -214,6 +220,32 @@
   .legend{ display:flex; gap:18px; justify-content:center; margin-top:26px; flex-wrap:wrap; font-size:12.5px; color: var(--ink-soft); }
   .legend span{ display:inline-flex; align-items:center; gap:6px; }
   .legend i{ width:12px; height:12px; border-radius:50%; display:inline-block; }
+
+  .table-overlay{
+    position:fixed; inset:0; background: rgba(10,14,22,0.5);
+    display:none; align-items:flex-start; justify-content:center;
+    z-index:100; padding: 30px 16px; overflow-y:auto;
+  }
+  .table-overlay.show{ display:flex; }
+  .table-popup{
+    background: var(--card-bg); border-radius: var(--radius-m);
+    max-width: 420px; width:100%; padding: 22px 24px 26px;
+    box-shadow: var(--shadow); border:1px solid var(--line);
+  }
+  .table-popup-close{
+    float:right; background:none; border:none; font-size:20px; cursor:pointer; color: var(--ink-soft);
+    line-height:1;
+  }
+  .table-popup h3{ font-family:'Fraunces', serif; margin:0 0 2px; font-size:19px; display:flex; align-items:center; gap:8px; }
+  .table-popup .vip-badge{
+    font-size:10.5px; letter-spacing:0.04em; color: var(--navy); background: var(--gold-bright);
+    padding:2px 8px; border-radius: 20px; font-family:'Inter',sans-serif; font-weight:700;
+  }
+  .table-popup .occ{ color: var(--ink-soft); font-size:13.5px; margin-bottom:16px; }
+  .seat-list{ border:1px solid var(--line); border-radius: var(--radius-s); overflow:hidden; }
+  .seat-row{ padding:9px 12px; font-size:14px; border-bottom:1px solid var(--line); }
+  .seat-row:last-child{ border-bottom:none; }
+  .seat-empty{ padding:16px; text-align:center; color: var(--ink-soft); font-size:13px; }
 
   footer{ text-align:center; color: var(--ink-soft); font-size:12px; padding: 0 20px 34px; }
 
@@ -243,7 +275,7 @@
 </style>
 </head>
 <body>
-  <script type="application/json" id="seedData">{"layout":{"rows":5,"perRow":6},"guests":[{"id":"g1","name":"Solmaz Həsənova","table":2},{"id":"g2","name":"Həsən İmanov","table":3},{"id":"g3","name":"Aygün Musateva","table":2},{"id":"g4","name":"Fərid Məmmdədov","table":1},{"id":"g5","name":"Seymur Alıyev","table":18},{"id":"g6","name":"Sevinc Bayramova","table":25}]}</script>
+  <script type="application/json" id="seedData">{"layout":{"rows":5,"perRow":6,"defaultSeats":8},"tables":{"1":{"vip":true},"2":{"vip":true},"3":{"vip":true},"4":{"vip":true},"5":{"vip":true},"6":{"vip":true}},"guests":[{"id":"g1","name":"Solmaz Həsənova","table":2},{"id":"g2","name":"Həsən İmanov","table":3},{"id":"g3","name":"Aygün Musateva","table":2},{"id":"g4","name":"Fərid Məmmdədov","table":1},{"id":"g5","name":"Seymur Alıyev","table":18},{"id":"g6","name":"Sevinc Bayramova","table":25}]}</script>
 
   <div class="top">
     <div class="top-inner">
@@ -285,16 +317,31 @@
       <div class="legend">
         <span><i style="background:var(--paper-2); border:2px solid var(--line);"></i> Boş masa</span>
         <span><i style="background:var(--gold);"></i> Axtarılan qonağın masası</span>
+        <span><i style="background:var(--paper-2); border:2px solid var(--gold);"></i> VİP masa</span>
       </div>
+      <p class="hint" style="text-align:center; margin-top:14px;">Hər hansı masaya klikləyin — kimlərin oturduğunu görün</p>
     </div>
   </div>
 
   <footer>Xankəndi Konqres Mərkəzi</footer>
 
+  <div class="table-overlay" id="tableOverlay">
+    <div class="table-popup">
+      <button class="table-popup-close" id="tablePopupClose">&times;</button>
+      <h3>Masa <span id="tablePopupNum"></span> <span class="vip-badge" id="tablePopupVip" hidden>VİP</span></h3>
+      <div class="occ" id="tablePopupOcc"></div>
+      <div class="seat-list" id="tablePopupList"></div>
+    </div>
+  </div>
+
 <script>
 (function(){
   const DEFAULT_STATE = {
-    layout: { rows: 5, perRow: 6 },
+    layout: { rows: 5, perRow: 6, defaultSeats: 8 },
+    tables: {
+      '1': { vip: true }, '2': { vip: true }, '3': { vip: true },
+      '4': { vip: true }, '5': { vip: true }, '6': { vip: true }
+    },
     guests: [
       { id: 'g1', name: 'Solmaz Həsənova', table: 2 },
       { id: 'g2', name: 'Həsən İmanov', table: 3 },
@@ -307,7 +354,9 @@
 
   function normalize(parsed){
     if(!parsed || typeof parsed !== 'object') return JSON.parse(JSON.stringify(DEFAULT_STATE));
-    if(!parsed.layout) parsed.layout = { rows:5, perRow:6 };
+    if(!parsed.layout) parsed.layout = { rows:5, perRow:6, defaultSeats:8 };
+    if(!parsed.layout.defaultSeats) parsed.layout.defaultSeats = 8;
+    if(!parsed.tables) parsed.tables = {};
     if(!parsed.guests) parsed.guests = [];
     return parsed;
   }
@@ -331,6 +380,18 @@
 
   function totalTables(){ return state.layout.rows * state.layout.perRow; }
 
+  function tableConfig(tableNumber){
+    const override = state.tables[String(tableNumber)] || {};
+    return {
+      seats: override.seats || state.layout.defaultSeats,
+      vip: !!override.vip
+    };
+  }
+
+  function guestsAtTable(tableNumber){
+    return state.guests.filter(g => g.table === tableNumber);
+  }
+
   function renderHall(){
     const container = document.getElementById('rowsContainer');
     container.innerHTML = '';
@@ -340,7 +401,7 @@
       rowEl.className = 'row';
       for(let c=0; c<state.layout.perRow; c++){
         const t = document.createElement('div');
-        t.className = 'table-el';
+        t.className = 'table-el' + (tableConfig(tableNum).vip ? ' vip' : '');
         t.dataset.table = tableNum;
         t.textContent = tableNum;
         rowEl.appendChild(t);
@@ -446,6 +507,33 @@
       suggestionsEl.classList.remove('show');
     }
   });
+
+  // Table detail popup
+  const tableOverlay = document.getElementById('tableOverlay');
+  const rowsContainer = document.getElementById('rowsContainer');
+
+  function openTablePopup(tableNumber){
+    const cfg = tableConfig(tableNumber);
+    const guests = guestsAtTable(tableNumber);
+    document.getElementById('tablePopupNum').textContent = tableNumber;
+    document.getElementById('tablePopupVip').hidden = !cfg.vip;
+    const empty = Math.max(cfg.seats - guests.length, 0);
+    document.getElementById('tablePopupOcc').textContent =
+      `${guests.length} / ${cfg.seats} yer dolu — ${empty} yer boş`;
+    const listEl = document.getElementById('tablePopupList');
+    listEl.innerHTML = guests.length
+      ? guests.map(g => `<div class="seat-row">${escapeHtml(g.name)}</div>`).join('')
+      : '<div class="seat-empty">Bu masa hələ boşdur</div>';
+    tableOverlay.classList.add('show');
+  }
+
+  rowsContainer.addEventListener('click', (e)=>{
+    const el = e.target.closest('.table-el');
+    if(!el) return;
+    openTablePopup(parseInt(el.dataset.table, 10));
+  });
+  document.getElementById('tablePopupClose').addEventListener('click', ()=> tableOverlay.classList.remove('show'));
+  tableOverlay.addEventListener('click', (e)=>{ if(e.target === tableOverlay) tableOverlay.classList.remove('show'); });
 
   // Init
   renderHall();
