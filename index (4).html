@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Xankəndi Konqres Mərkəzi — Qonaq Yerləşdirmə</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy: #16233d;
+    --navy-2: #1f314f;
+    --gold: #bd9757;
+    --gold-bright: #d9b876;
+    --paper: #f6f3ec;
+    --paper-2: #efe9db;
+    --ink: #23262c;
+    --ink-soft: #5a5f6b;
+    --line: rgba(35,38,44,0.12);
+    --burgundy: #7d2634;
+    --ok-bg: #eef1e6;
+    --card-bg: #ffffff;
+    --shadow: 0 10px 30px rgba(22,35,61,0.10);
+    --radius-s: 6px;
+    --radius-m: 12px;
+  }
+  :root:not([data-theme="light"]){
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper: #12151c;
+      --paper-2: #171b24;
+      --ink: #ece9e1;
+      --ink-soft: #a3a7b3;
+      --line: rgba(236,233,225,0.12);
+      --card-bg: #1b2029;
+      --navy: #0e1626;
+      --navy-2: #16233d;
+      --shadow: 0 10px 30px rgba(0,0,0,0.45);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper: #12151c;
+    --paper-2: #171b24;
+    --ink: #ece9e1;
+    --ink-soft: #a3a7b3;
+    --line: rgba(236,233,225,0.12);
+    --card-bg: #1b2029;
+    --navy: #0e1626;
+    --navy-2: #16233d;
+    --shadow: 0 10px 30px rgba(0,0,0,0.45);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .top{
+    background: linear-gradient(180deg, var(--navy) 0%, var(--navy-2) 100%);
+    color: #f3efe4;
+    padding: 34px 20px 46px;
+    position: relative;
+    overflow:hidden;
+  }
+  .top::after{
+    content:"";
+    position:absolute; left:0; right:0; bottom:0; height:3px;
+    background: linear-gradient(90deg, transparent, var(--gold-bright), transparent);
+  }
+  .top-inner{
+    max-width: 920px; margin:0 auto; text-align:center; position:relative; z-index:1;
+  }
+  .eyebrow{
+    font-size: 13px; letter-spacing: 0.04em; color: var(--gold-bright);
+    margin: 0 0 10px;
+  }
+  .top h1{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size: clamp(28px, 4.4vw, 42px);
+    margin: 0 0 8px;
+    letter-spacing: -0.01em;
+  }
+  .top p.sub{
+    margin:0; color: rgba(243,239,228,0.72); font-size:15px;
+  }
+
+  .search-wrap{
+    max-width: 640px; margin: -26px auto 0; padding: 0 20px; position:relative; z-index:2;
+  }
+  .search-box{
+    background: var(--card-bg);
+    border-radius: var(--radius-m);
+    box-shadow: var(--shadow);
+    padding: 8px;
+    display:flex; gap:8px; align-items:center;
+    border: 1px solid var(--line);
+  }
+  .search-box input{
+    flex:1; border:none; outline:none; background:transparent;
+    font-size: 17px; padding: 12px 10px; color:var(--ink);
+    font-family:'Inter',sans-serif;
+  }
+  .search-box input::placeholder{ color: var(--ink-soft); }
+  .search-icon{ padding-left:10px; color: var(--ink-soft); display:flex; }
+
+  .suggestions{
+    background: var(--card-bg);
+    border-radius: 0 0 var(--radius-m) var(--radius-m);
+    box-shadow: var(--shadow);
+    margin-top:-8px;
+    overflow:hidden;
+    border: 1px solid var(--line); border-top:none;
+    display:none;
+  }
+  .suggestions.show{ display:block; }
+  .sugg-item{
+    padding: 12px 18px; cursor:pointer; display:flex; justify-content:space-between; align-items:center;
+    border-bottom: 1px solid var(--line);
+    font-size:15px;
+  }
+  .sugg-item:last-child{ border-bottom:none; }
+  .sugg-item:hover, .sugg-item.active{ background: var(--paper-2); }
+  .sugg-name{ font-weight:600; }
+  .sugg-table{ color: var(--ink-soft); font-size:13px; }
+
+  .result-card{
+    margin: 16px 20px 0; max-width:600px; margin-left:auto; margin-right:auto;
+    background: var(--card-bg);
+    border-radius: var(--radius-m);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--line);
+    padding: 22px 24px;
+    display:none;
+    animation: pop .28s ease;
+  }
+  .result-card.show{ display:flex; align-items:center; gap:18px; justify-content:space-between; }
+  @keyframes pop{ from{ opacity:0; transform: translateY(-6px);} to{opacity:1; transform:translateY(0);} }
+  .result-name{ font-family:'Fraunces', serif; font-size:20px; font-weight:600; }
+  .result-loc{ color: var(--ink-soft); font-size:13.5px; margin-top:4px; }
+  .result-table{
+    text-align:center; background: var(--navy); color:#fff; border-radius: var(--radius-s);
+    padding: 10px 18px; min-width:88px;
+  }
+  .result-table .num{ font-family:'Fraunces', serif; font-size:28px; font-weight:700; color: var(--gold-bright); line-height:1; }
+  .result-table .lbl{ font-size:10.5px; letter-spacing:0.05em; color: rgba(255,255,255,0.7); margin-top:4px; }
+
+  .not-found{
+    margin: 16px 20px 0; max-width:600px; margin-left:auto; margin-right:auto;
+    text-align:center; color: var(--ink-soft); font-size:14px; display:none;
+  }
+  .not-found.show{ display:block; }
+
+  .map-section{ max-width: 1040px; margin: 40px auto 0; padding: 0 20px 60px; }
+  .map-header{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:16px; flex-wrap:wrap; gap:8px; }
+  .map-header h2{ font-family:'Fraunces', serif; font-weight:600; font-size:20px; margin:0; }
+  .map-header .hint{ font-size:12.5px; color: var(--ink-soft); }
+
+  .hall{
+    background: var(--card-bg);
+    border-radius: var(--radius-m);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow);
+    padding: 28px 20px 34px;
+    overflow-x:auto;
+  }
+  .stage{
+    background: var(--navy);
+    color: var(--gold-bright);
+    text-align:center;
+    font-family:'Fraunces', serif;
+    letter-spacing: 0.04em;
+    font-size: 13px;
+    padding: 10px 0;
+    border-radius: var(--radius-s);
+    margin: 0 auto 30px;
+    max-width: 320px;
+  }
+  .rows{ display:flex; flex-direction:column; gap:22px; align-items:center; min-width: 340px; }
+  .row{ display:flex; gap:16px; justify-content:center; flex-wrap:nowrap; }
+  .table-el{
+    width:56px; height:56px; border-radius:50%;
+    background: var(--paper-2);
+    border: 2px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    font-weight:700; font-size:15px; color: var(--ink);
+    flex-shrink:0;
+    transition: transform .35s ease, box-shadow .35s ease, background .35s ease, border-color .35s ease;
+    cursor:default; position:relative;
+  }
+  .table-el.highlight{
+    background: var(--gold);
+    border-color: var(--gold-bright);
+    color: var(--navy);
+    transform: scale(1.28);
+    box-shadow: 0 0 0 6px rgba(189,151,87,0.22), 0 8px 18px rgba(189,151,87,0.35);
+    z-index:3;
+  }
+  @keyframes ring{
+    0%{ box-shadow: 0 0 0 0 rgba(189,151,87,0.5);}
+    100%{ box-shadow: 0 0 0 14px rgba(189,151,87,0);}
+  }
+  .table-el.highlight::after{
+    content:""; position:absolute; inset:-2px; border-radius:50%;
+    animation: ring 1.1s ease-out 2;
+  }
+
+  .legend{ display:flex; gap:18px; justify-content:center; margin-top:26px; flex-wrap:wrap; font-size:12.5px; color: var(--ink-soft); }
+  .legend span{ display:inline-flex; align-items:center; gap:6px; }
+  .legend i{ width:12px; height:12px; border-radius:50%; display:inline-block; }
+
+  .gear{
+    position:fixed; bottom:18px; right:18px;
+    width:44px; height:44px; border-radius:50%;
+    background: var(--navy); color:#fff; border:none;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; box-shadow: var(--shadow); z-index:50;
+    font-size:18px;
+  }
+  .gear:hover{ background: var(--navy-2); }
+
+  .overlay{
+    position:fixed; inset:0; background: rgba(10,14,22,0.5);
+    display:none; align-items:flex-start; justify-content:center;
+    z-index:100; padding: 30px 16px; overflow-y:auto;
+  }
+  .overlay.show{ display:flex; }
+  .panel{
+    background: var(--card-bg); border-radius: var(--radius-m);
+    max-width: 640px; width:100%; padding: 26px 26px 30px;
+    box-shadow: var(--shadow); border:1px solid var(--line);
+  }
+  .panel h3{ font-family:'Fraunces', serif; margin:0 0 4px; font-size:19px; }
+  .panel .desc{ color: var(--ink-soft); font-size:13px; margin-bottom:18px; }
+  .panel-close{
+    float:right; background:none; border:none; font-size:20px; cursor:pointer; color: var(--ink-soft);
+    line-height:1;
+  }
+  .field-row{ display:flex; gap:10px; margin-bottom:10px; }
+  .field-row input, .field-row textarea{
+    flex:1; border:1px solid var(--line); border-radius: var(--radius-s);
+    padding:9px 11px; font-size:14px; font-family:'Inter',sans-serif;
+    background: var(--paper); color: var(--ink);
+  }
+  .field-row input.w-table{ max-width:110px; flex:none; }
+  textarea{ width:100%; min-height:110px; resize:vertical; font-family: 'Inter',sans-serif; font-size:13.5px; }
+  .btn{
+    border:none; border-radius: var(--radius-s); padding:10px 16px;
+    font-size:14px; font-weight:600; cursor:pointer; font-family:'Inter',sans-serif;
+  }
+  .btn-primary{ background: var(--navy); color:#fff; }
+  .btn-primary:hover{ background: var(--navy-2); }
+  .btn-ghost{ background: var(--paper-2); color: var(--ink); }
+  .btn-ghost:hover{ background: var(--line); }
+  .btn-danger{ background: var(--burgundy); color:#fff; }
+  .tabs{ display:flex; gap:6px; margin-bottom:18px; border-bottom:1px solid var(--line); }
+  .tab{ padding:8px 4px; cursor:pointer; font-size:13.5px; color: var(--ink-soft); border-bottom:2px solid transparent; margin-right:14px; }
+  .tab.active{ color: var(--ink); border-color: var(--gold); font-weight:600; }
+  .tab-content{ display:none; }
+  .tab-content.active{ display:block; }
+  .guest-list{ max-height:260px; overflow-y:auto; border:1px solid var(--line); border-radius: var(--radius-s); }
+  .guest-row{ display:flex; justify-content:space-between; align-items:center; padding:8px 12px; border-bottom:1px solid var(--line); font-size:13.5px; }
+  .guest-row:last-child{ border-bottom:none; }
+  .guest-row button{ background:none; border:none; color: var(--burgundy); cursor:pointer; font-size:13px; }
+  .settings-grid{ display:flex; gap:12px; margin-bottom:14px; }
+  .settings-grid label{ font-size:12.5px; color: var(--ink-soft); display:block; margin-bottom:4px; }
+  .msg{ font-size:12.5px; margin-top:8px; min-height:16px; }
+  .msg.ok{ color: #4a7a3d; }
+  .msg.err{ color: var(--burgundy); }
+  .empty-note{ padding:16px; text-align:center; color: var(--ink-soft); font-size:13px; }
+
+  footer{ text-align:center; color: var(--ink-soft); font-size:12px; padding: 0 20px 34px; }
+
+  .sync-bar{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    background: var(--paper-2); border:1px solid var(--line); border-radius: var(--radius-s);
+    padding:10px 12px; margin-bottom:16px; flex-wrap:wrap;
+  }
+  .sync-status{ font-size:12.5px; color: var(--ink-soft); }
+  .sync-status.dirty{ color: var(--burgundy); font-weight:600; }
+  .sync-status.ok{ color: #4a7a3d; font-weight:600; }
+  #publishBtn{ white-space:nowrap; }
+
+  /* Tablet and phone tuning */
+  @media (max-width: 760px){
+    .top{ padding: 26px 16px 40px; }
+    .search-wrap{ padding: 0 14px; }
+    .map-section{ padding: 0 14px 44px; }
+    .hall{ padding: 22px 12px 26px; }
+    .panel{ padding: 20px 18px 24px; max-height: calc(100vh - 40px); overflow-y:auto; }
+    .overlay{ padding: 14px 10px; }
+    .tabs{ flex-wrap: wrap; row-gap:8px; }
+    .tab{ margin-right:10px; font-size:13px; }
+    .field-row{ flex-wrap:wrap; }
+    .field-row input.w-table{ max-width:100%; flex:1; }
+    .btn{ padding: 11px 16px; }
+    .gear{ width:50px; height:50px; font-size:20px; bottom:16px; right:16px; }
+    .sync-bar{ flex-direction:column; align-items:stretch; }
+    #publishBtn{ width:100%; }
+  }
+
+  @media (max-width:480px){
+    .table-el{ width:42px; height:42px; font-size:12.5px; }
+    .row{ gap:8px; }
+    .rows{ gap:12px; }
+    .result-card.show{ flex-direction:column; align-items:flex-start; gap:12px; }
+    .result-table{ align-self:stretch; }
+    .top h1{ font-size:26px; }
+    .search-box input{ font-size:16px; padding:11px 8px; }
+    .legend{ gap:10px; font-size:11.5px; }
+  }
+
+  /* Larger tap targets everywhere on touch devices */
+  @media (pointer: coarse){
+    .tab{ padding:10px 4px; }
+    .guest-row button{ padding:6px 8px; }
+    input, textarea, button{ font-size: max(14px, inherit); }
+  }
+</style>
+</head>
+<body>
+  <script type="application/json" id="seedData">{"layout":{"rows":5,"perRow":6},"guests":[{"id":"g1","name":"Həsən Əliyev","table":3},{"id":"g2","name":"Aynur Məmmədova","table":12},{"id":"g3","name":"Rəşad Hüseynov","table":7},{"id":"g4","name":"Nərmin Quliyeva","table":1},{"id":"g5","name":"Tural Abbasov","table":18},{"id":"g6","name":"Sevinc Bayramova","table":25}]}</script>
+
+  <div class="top">
+    <div class="top-inner">
+      <p class="eyebrow">XANKƏNDİ KONQRES MƏRKƏZİ</p>
+      <h1>Qonaq Yerləşdirmə Sistemi</h1>
+      <p class="sub">Adı yazın — masa nömrəsi və zaldakı yeri dərhal görünsün</p>
+    </div>
+  </div>
+
+  <div class="search-wrap">
+    <div class="search-box">
+      <span class="search-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      </span>
+      <input id="searchInput" type="text" placeholder="Qonağın adını yazın..." autocomplete="off">
+    </div>
+    <div class="suggestions" id="suggestions"></div>
+    <div class="result-card" id="resultCard">
+      <div>
+        <div class="result-name" id="resultName"></div>
+        <div class="result-loc" id="resultLoc"></div>
+      </div>
+      <div class="result-table">
+        <div class="num" id="resultTableNum"></div>
+        <div class="lbl">MASA</div>
+      </div>
+    </div>
+    <div class="not-found" id="notFound">Bu adda qonaq tapılmadı. Yoxlayın və ya inzibatçı panelindən əlavə edin.</div>
+  </div>
+
+  <div class="map-section">
+    <div class="map-header">
+      <h2>Zal Sxemi</h2>
+      <span class="hint" id="mapHint">Axtarış edin — masa xəritədə işıqlanacaq</span>
+    </div>
+    <div class="hall">
+      <div class="stage">SƏHNƏ</div>
+      <div class="rows" id="rowsContainer"></div>
+      <div class="legend">
+        <span><i style="background:var(--paper-2); border:2px solid var(--line);"></i> Boş masa</span>
+        <span><i style="background:var(--gold);"></i> Axtarılan qonağın masası</span>
+      </div>
+    </div>
+  </div>
+
+  <footer>Yalnız bu cihazda saxlanılır &middot; İnzibatçı panelindən idarə edin</footer>
+
+  <button class="gear" id="gearBtn" title="İnzibatçı paneli">⚙</button>
+
+  <div class="overlay" id="overlay">
+    <div class="panel">
+      <button class="panel-close" id="closePanel">&times;</button>
+      <h3>İnzibatçı Paneli</h3>
+      <p class="desc">Qonaqları əlavə edin, masa sayını tənzimləyin. Dəyişikliklər yalnız aşağıdakı düyməni basdıqda bütün cihazlara göndərilir.</p>
+
+      <div class="sync-bar" id="syncBar">
+        <span class="sync-status" id="syncStatus">Yüklənir...</span>
+        <button class="btn btn-primary" id="publishBtn">Bütün cihazlar üçün yenilə</button>
+      </div>
+      <div class="msg" id="publishMsg"></div>
+
+      <div class="tabs">
+        <div class="tab active" data-tab="add">Tək əlavə et</div>
+        <div class="tab" data-tab="bulk">Toplu əlavə et</div>
+        <div class="tab" data-tab="list">Siyahı (<span id="guestCount">0</span>)</div>
+        <div class="tab" data-tab="settings">Tənzimləmə</div>
+      </div>
+
+      <div class="tab-content active" data-tab-content="add">
+        <div class="field-row">
+          <input type="text" id="addName" placeholder="Ad Soyad">
+          <input type="text" id="addTable" class="w-table" placeholder="Masa №">
+        </div>
+        <button class="btn btn-primary" id="addGuestBtn">Əlavə et</button>
+        <div class="msg" id="addMsg"></div>
+      </div>
+
+      <div class="tab-content" data-tab-content="bulk">
+        <p class="desc" style="margin-top:-8px;">Hər sətirdə: <strong>Ad Soyad; Masa nömrəsi</strong> — məsələn:<br>Həsən Əliyev; 12<br>Aynur Məmmədova; 7</p>
+        <textarea id="bulkText" placeholder="Ad Soyad; Masa nömrəsi"></textarea>
+        <div style="margin-top:10px; display:flex; gap:8px;">
+          <button class="btn btn-primary" id="bulkAddBtn">Siyahını əlavə et</button>
+          <button class="btn btn-ghost" id="bulkReplaceBtn">Mövcud siyahını əvəz et</button>
+        </div>
+        <div class="msg" id="bulkMsg"></div>
+      </div>
+
+      <div class="tab-content" data-tab-content="list">
+        <div class="guest-list" id="guestListEl"></div>
+        <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn btn-ghost" id="exportBtn">JSON kimi yüklə</button>
+          <button class="btn btn-ghost" id="importBtn">JSON idxal et</button>
+          <button class="btn btn-danger" id="clearBtn">Hamısını sil</button>
+        </div>
+        <input type="file" id="importFile" accept="application/json" style="display:none;">
+      </div>
+
+      <div class="tab-content" data-tab-content="settings">
+        <div class="settings-grid">
+          <div>
+            <label>Sıra sayı</label>
+            <input type="number" id="numRows" min="1" max="20">
+          </div>
+          <div>
+            <label>Sırada masa sayı</label>
+            <input type="number" id="perRow" min="1" max="20">
+          </div>
+        </div>
+        <button class="btn btn-primary" id="applySettingsBtn">Tətbiq et</button>
+        <div class="msg" id="settingsMsg"></div>
+        <p class="desc" style="margin-top:16px;">Ümumi masa sayı: sıra × sırada masa. Qonaq masa nömrəsi bu diapazonda olmalıdır ki, xəritədə görünsün.</p>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+(function(){
+  // Capture the page as served, before any script mutates the DOM.
+  // This is the canonical source we republish from (never the live,
+  // possibly-mutated DOM) when the admin sends an update to everyone.
+  const PRISTINE_HTML = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+
+  const STORAGE_KEY = 'xankendi_congress_seating_v1';
+
+  const DEFAULT_STATE = {
+    layout: { rows: 5, perRow: 6 },
+    guests: [
+      { id: 'g1', name: 'Həsən Əliyev', table: 3 },
+      { id: 'g2', name: 'Aynur Məmmədova', table: 12 },
+      { id: 'g3', name: 'Rəşad Hüseynov', table: 7 },
+      { id: 'g4', name: 'Nərmin Quliyeva', table: 1 },
+      { id: 'g5', name: 'Tural Abbasov', table: 18 },
+      { id: 'g6', name: 'Sevinc Bayramova', table: 25 }
+    ]
+  };
+
+  function normalize(parsed){
+    if(!parsed || typeof parsed !== 'object') return JSON.parse(JSON.stringify(DEFAULT_STATE));
+    if(!parsed.layout) parsed.layout = { rows:5, perRow:6 };
+    if(!parsed.guests) parsed.guests = [];
+    return parsed;
+  }
+
+  // Source of truth: the seed script embedded in the page. Every viewer
+  // opening this artifact sees the same seed, so this is the "shared" data.
+  function loadSeedState(){
+    try{
+      const el = document.getElementById('seedData');
+      if(!el) return null;
+      return normalize(JSON.parse(el.textContent));
+    }catch(e){
+      console.error('Seed parse error', e);
+      return null;
+    }
+  }
+
+  // Fallback used only when this page runs with no artifact capability
+  // (e.g. opened as a plain downloaded file outside claude.ai) — then it
+  // behaves as a single-device tool, same as before.
+  function loadLocalState(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return null;
+      return normalize(JSON.parse(raw));
+    }catch(e){
+      return null;
+    }
+  }
+  function saveLocalState(){
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+    catch(e){ console.error('Local save error', e); }
+  }
+
+  let state = loadSeedState() || loadLocalState() || JSON.parse(JSON.stringify(DEFAULT_STATE));
+  let artifactCap = null;      // resolves to the artifact capability, or stays null
+  let canWrite = true;         // flips false on first not_writer/not_granted rejection
+  let dirty = false;           // local edits not yet sent to everyone
+
+  const az = s => (s||'').toLocaleLowerCase('az').trim();
+
+  function setSyncStatus(text, kind){
+    const el = document.getElementById('syncStatus');
+    if(!el) return;
+    el.textContent = text;
+    el.className = 'sync-status' + (kind ? ' ' + kind : '');
+  }
+
+  function markDirty(){
+    dirty = true;
+    saveLocalState(); // keep this device's copy safe even before it's sent to everyone
+    if(artifactCap && canWrite){
+      setSyncStatus('Dəyişikliklər var — hələ göndərilməyib', 'dirty');
+    }
+  }
+
+  async function initSync(){
+    if(!(window.claude && typeof window.claude.use === 'function')){
+      setSyncStatus('Tək cihaz rejimi (bu brauzerdə saxlanılır)');
+      document.getElementById('publishBtn').style.display = 'none';
+      return;
+    }
+    try{
+      artifactCap = await window.claude.use('artifact');
+    }catch(e){
+      artifactCap = null;
+    }
+    if(!artifactCap){
+      setSyncStatus('Tək cihaz rejimi (bu brauzerdə saxlanılır)');
+      document.getElementById('publishBtn').style.display = 'none';
+    }else{
+      setSyncStatus(dirty ? 'Dəyişikliklər var — hələ göndərilməyib' : 'Bütün cihazlarla sinxrondur', dirty ? 'dirty' : 'ok');
+    }
+  }
+
+  async function publishToEveryone(){
+    const msg = document.getElementById('publishMsg');
+    if(!artifactCap){
+      // No capability available — this device's data is already saved locally.
+      saveLocalState();
+      msg.textContent = 'Yadda saxlanıldı (yalnız bu cihazda).';
+      msg.className = 'msg ok';
+      return;
+    }
+    if(!canWrite){
+      msg.textContent = 'Yalnız bu siyahının sahibi hamı üçün yeniləyə bilər.';
+      msg.className = 'msg err';
+      return;
+    }
+    setSyncStatus('Göndərilir...');
+    msg.textContent = '';
+    const newJson = JSON.stringify(state);
+    const html = PRISTINE_HTML.replace(
+      /(<script type="application\/json" id="seedData">)([\s\S]*?)(<\/script>)/,
+      (_m, a, _b, c) => a + newJson + c
+    );
+    try{
+      await artifactCap.publish(html);
+      // On success every open view, including this one, reloads to the new version.
+      dirty = false;
+      msg.textContent = 'Göndərildi — bütün cihazlar tezliklə yenilənəcək.';
+      msg.className = 'msg ok';
+      setSyncStatus('Bütün cihazlarla sinxrondur', 'ok');
+    }catch(err){
+      const code = err && err.code;
+      if(code === 'conflict'){
+        msg.textContent = 'Başqa dəyişiklik artıq göndərilib — səhifə yenilənir.';
+        msg.className = 'msg ok';
+      }else if(code === 'not_writer' || code === 'not_granted' || code === 'consent_required'){
+        canWrite = false;
+        document.getElementById('publishBtn').style.display = 'none';
+        msg.textContent = 'Yalnız bu siyahının sahibi hamı üçün yeniləyə bilər.';
+        msg.className = 'msg err';
+      }else if(code === 'rate_limited'){
+        msg.textContent = 'Çox tez-tez göndərilir — bir az gözləyib yenidən cəhd edin.';
+        msg.className = 'msg err';
+      }else{
+        msg.textContent = 'Göndərmək alınmadı, yenidən cəhd edin.';
+        msg.className = 'msg err';
+        console.error('Publish error', err);
+      }
+    }
+  }
+
+  function totalTables(){ return state.layout.rows * state.layout.perRow; }
+
+  function renderHall(){
+    const container = document.getElementById('rowsContainer');
+    container.innerHTML = '';
+    let tableNum = 1;
+    for(let r=0; r<state.layout.rows; r++){
+      const rowEl = document.createElement('div');
+      rowEl.className = 'row';
+      for(let c=0; c<state.layout.perRow; c++){
+        const t = document.createElement('div');
+        t.className = 'table-el';
+        t.dataset.table = tableNum;
+        t.textContent = tableNum;
+        rowEl.appendChild(t);
+        tableNum++;
+      }
+      container.appendChild(rowEl);
+    }
+  }
+
+  function clearHighlight(){
+    document.querySelectorAll('.table-el.highlight').forEach(el=>el.classList.remove('highlight'));
+  }
+
+  function locationDescription(tableNumber){
+    const perRow = state.layout.perRow;
+    const idx = tableNumber - 1;
+    const row = Math.floor(idx / perRow) + 1;
+    const col = (idx % perRow) + 1;
+    const zone = row <= Math.ceil(state.layout.rows/3) ? 'səhnəyə yaxın' : (row >= state.layout.rows - Math.ceil(state.layout.rows/3) + 1 ? 'arxa hissə' : 'orta hissə');
+    return `${row}-ci sıra, soldan ${col}-ci masa — ${zone}`;
+  }
+
+  function highlightTable(tableNumber){
+    clearHighlight();
+    const el = document.querySelector('.table-el[data-table="'+tableNumber+'"]');
+    if(el){
+      el.classList.add('highlight');
+      el.scrollIntoView({ behavior:'smooth', block:'center', inline:'center' });
+    }
+  }
+
+  function showResult(guest){
+    document.getElementById('notFound').classList.remove('show');
+    document.getElementById('resultCard').classList.add('show');
+    document.getElementById('resultName').textContent = guest.name;
+    document.getElementById('resultTableNum').textContent = guest.table;
+    const inRange = guest.table >= 1 && guest.table <= totalTables();
+    document.getElementById('resultLoc').textContent = inRange ? locationDescription(guest.table) : 'Bu masa cari zal sxemində göstərilmir';
+    if(inRange) highlightTable(guest.table); else clearHighlight();
+  }
+
+  function showNotFound(){
+    document.getElementById('resultCard').classList.remove('show');
+    document.getElementById('notFound').classList.add('show');
+    clearHighlight();
+  }
+
+  function hideResults(){
+    document.getElementById('resultCard').classList.remove('show');
+    document.getElementById('notFound').classList.remove('show');
+    clearHighlight();
+  }
+
+  // Search
+  const searchInput = document.getElementById('searchInput');
+  const suggestionsEl = document.getElementById('suggestions');
+
+  function runSearch(q){
+    const query = az(q);
+    if(!query){
+      suggestionsEl.classList.remove('show');
+      hideResults();
+      return;
+    }
+    const matches = state.guests.filter(g => az(g.name).includes(query));
+    if(matches.length === 0){
+      suggestionsEl.classList.remove('show');
+      showNotFound();
+      return;
+    }
+    if(matches.length === 1){
+      suggestionsEl.classList.remove('show');
+      showResult(matches[0]);
+      return;
+    }
+    document.getElementById('resultCard').classList.remove('show');
+    document.getElementById('notFound').classList.remove('show');
+    suggestionsEl.innerHTML = matches.slice(0,8).map(g =>
+      `<div class="sugg-item" data-id="${g.id}"><span class="sugg-name">${escapeHtml(g.name)}</span><span class="sugg-table">Masa ${g.table}</span></div>`
+    ).join('');
+    suggestionsEl.classList.add('show');
+  }
+
+  function escapeHtml(str){
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  searchInput.addEventListener('input', (e)=> runSearch(e.target.value));
+  suggestionsEl.addEventListener('click', (e)=>{
+    const item = e.target.closest('.sugg-item');
+    if(!item) return;
+    const guest = state.guests.find(g=>g.id === item.dataset.id);
+    if(guest){
+      searchInput.value = guest.name;
+      suggestionsEl.classList.remove('show');
+      showResult(guest);
+    }
+  });
+  document.addEventListener('click', (e)=>{
+    if(!e.target.closest('.search-wrap')){
+      suggestionsEl.classList.remove('show');
+    }
+  });
+
+  // Admin panel
+  const overlay = document.getElementById('overlay');
+  document.getElementById('gearBtn').addEventListener('click', ()=>{
+    overlay.classList.add('show');
+    refreshAdmin();
+  });
+  document.getElementById('closePanel').addEventListener('click', ()=> overlay.classList.remove('show'));
+  document.getElementById('publishBtn').addEventListener('click', publishToEveryone);
+  overlay.addEventListener('click', (e)=>{ if(e.target === overlay) overlay.classList.remove('show'); });
+
+  document.querySelectorAll('.tab').forEach(tab=>{
+    tab.addEventListener('click', ()=>{
+      document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+      tab.classList.add('active');
+      document.querySelector('.tab-content[data-tab-content="'+tab.dataset.tab+'"]').classList.add('active');
+    });
+  });
+
+  function refreshAdmin(){
+    document.getElementById('numRows').value = state.layout.rows;
+    document.getElementById('perRow').value = state.layout.perRow;
+    document.getElementById('guestCount').textContent = state.guests.length;
+    const listEl = document.getElementById('guestListEl');
+    if(state.guests.length === 0){
+      listEl.innerHTML = '<div class="empty-note">Hələ qonaq əlavə edilməyib</div>';
+    }else{
+      listEl.innerHTML = state.guests.map(g=>
+        `<div class="guest-row"><span>${escapeHtml(g.name)} — Masa ${g.table}</span><button data-id="${g.id}">Sil</button></div>`
+      ).join('');
+      listEl.querySelectorAll('button[data-id]').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          state.guests = state.guests.filter(g=>g.id !== btn.dataset.id);
+          markDirty();
+          refreshAdmin();
+        });
+      });
+    }
+  }
+
+  function genId(){ return 'g' + Date.now() + Math.floor(Math.random()*1000); }
+
+  document.getElementById('addGuestBtn').addEventListener('click', ()=>{
+    const name = document.getElementById('addName').value.trim();
+    const table = parseInt(document.getElementById('addTable').value, 10);
+    const msg = document.getElementById('addMsg');
+    if(!name || !table){
+      msg.textContent = 'Ad və masa nömrəsini daxil edin.';
+      msg.className = 'msg err';
+      return;
+    }
+    state.guests.push({ id: genId(), name, table });
+    markDirty();
+    document.getElementById('addName').value = '';
+    document.getElementById('addTable').value = '';
+    msg.textContent = `${name} əlavə olundu — Masa ${table}`;
+    msg.className = 'msg ok';
+    refreshAdmin();
+  });
+
+  function parseBulk(text){
+    return text.split('\n').map(line=>line.trim()).filter(Boolean).map(line=>{
+      const parts = line.split(/;|,(?=[^,]*$)/).map(p=>p.trim());
+      let name, table;
+      if(parts.length >= 2){
+        name = parts[0];
+        table = parseInt(parts[1], 10);
+      }
+      return (name && table) ? { id: genId(), name, table } : null;
+    }).filter(Boolean);
+  }
+
+  document.getElementById('bulkAddBtn').addEventListener('click', ()=>{
+    const parsed = parseBulk(document.getElementById('bulkText').value);
+    const msg = document.getElementById('bulkMsg');
+    if(parsed.length === 0){
+      msg.textContent = 'Düzgün sətir tapılmadı. Format: Ad Soyad; Masa nömrəsi';
+      msg.className = 'msg err';
+      return;
+    }
+    state.guests = state.guests.concat(parsed);
+    markDirty();
+    msg.textContent = `${parsed.length} qonaq əlavə olundu.`;
+    msg.className = 'msg ok';
+    document.getElementById('bulkText').value = '';
+    refreshAdmin();
+  });
+
+  document.getElementById('bulkReplaceBtn').addEventListener('click', ()=>{
+    const parsed = parseBulk(document.getElementById('bulkText').value);
+    const msg = document.getElementById('bulkMsg');
+    if(parsed.length === 0){
+      msg.textContent = 'Düzgün sətir tapılmadı. Format: Ad Soyad; Masa nömrəsi';
+      msg.className = 'msg err';
+      return;
+    }
+    state.guests = parsed;
+    markDirty();
+    msg.textContent = `Siyahı əvəz olundu — ${parsed.length} qonaq.`;
+    msg.className = 'msg ok';
+    document.getElementById('bulkText').value = '';
+    refreshAdmin();
+  });
+
+  document.getElementById('applySettingsBtn').addEventListener('click', ()=>{
+    const rows = parseInt(document.getElementById('numRows').value, 10);
+    const perRow = parseInt(document.getElementById('perRow').value, 10);
+    const msg = document.getElementById('settingsMsg');
+    if(!rows || !perRow || rows < 1 || perRow < 1){
+      msg.textContent = 'Düzgün rəqəm daxil edin.';
+      msg.className = 'msg err';
+      return;
+    }
+    state.layout = { rows, perRow };
+    markDirty();
+    renderHall();
+    msg.textContent = `Tətbiq olundu — ümumi ${rows*perRow} masa.`;
+    msg.className = 'msg ok';
+  });
+
+  document.getElementById('exportBtn').addEventListener('click', ()=>{
+    try{
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type:'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'qonaq-siyahisi.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }catch(e){ console.error(e); }
+  });
+
+  document.getElementById('importBtn').addEventListener('click', ()=>{
+    document.getElementById('importFile').click();
+  });
+  document.getElementById('importFile').addEventListener('change', (e)=>{
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev)=>{
+      try{
+        const parsed = JSON.parse(ev.target.result);
+        if(parsed.guests && parsed.layout){
+          state = parsed;
+          markDirty();
+          renderHall();
+          refreshAdmin();
+        }
+      }catch(err){ console.error('Import error', err); }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  });
+
+  document.getElementById('clearBtn').addEventListener('click', ()=>{
+    if(state.guests.length === 0) return;
+    state.guests = [];
+    markDirty();
+    refreshAdmin();
+  });
+
+  // Init
+  renderHall();
+  initSync();
+})();
+</script>
+</body>
+</html>
