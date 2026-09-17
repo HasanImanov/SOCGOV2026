@@ -177,7 +177,13 @@
     width:56px; height:56px; border-radius:50%; background: var(--paper-2); border: 2px solid var(--line);
     display:flex; align-items:center; justify-content:center; font-weight:700; font-size:15px; color: var(--ink);
     flex-shrink:0; transition: transform .35s ease, box-shadow .35s ease, background .35s ease, border-color .35s ease;
-    cursor:default; position:relative;
+    cursor:pointer; position:relative;
+  }
+  .table-el:hover{ border-color: var(--gold); }
+  .table-el.has-arrived{
+    background: var(--green-bg);
+    border-color: var(--green);
+    color: var(--green);
   }
   .table-el.highlight{
     background: var(--gold); border-color: var(--gold-bright); color: var(--navy); transform: scale(1.28);
@@ -243,6 +249,19 @@
   .msg.err{ color: var(--burgundy); }
   .empty-note{ padding:16px; text-align:center; color: var(--ink-soft); font-size:13px; }
   footer{ text-align:center; color: var(--ink-soft); font-size:12px; padding: 0 20px 34px; }
+
+  .table-modal-panel{ max-width: 420px; }
+  .tg-list{ display:flex; flex-direction:column; gap:8px; margin-top:14px; }
+  .tg-item{
+    display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius: var(--radius-s);
+    font-size:14px; font-weight:600;
+  }
+  .tg-item.arrived{ background: var(--green-bg); color: var(--green); }
+  .tg-item.pending{ background: rgba(125,38,52,0.08); color: var(--burgundy); }
+  .tg-dot{ width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+  .tg-item.arrived .tg-dot{ background: var(--green); }
+  .tg-item.pending .tg-dot{ background: var(--burgundy); }
+  .tg-summary{ font-size:12.5px; color: var(--ink-soft); margin-top:2px; }
 
   @media (max-width: 760px){
     .top{ padding: 26px 16px 40px; }
@@ -315,13 +334,14 @@
   <div class="map-section">
     <div class="map-header">
       <h2>Zal Sxemi</h2>
-      <span class="hint" id="mapHint">Axtarış edin — masa xəritədə işıqlanacaq</span>
+      <span class="hint" id="mapHint">Axtarış edin, ya da masaya toxunub siyahını görün</span>
     </div>
     <div class="hall">
       <div class="stage">SƏHNƏ</div>
       <div class="rows" id="rowsContainer"></div>
       <div class="legend">
         <span><i style="background:var(--paper-2); border:2px solid var(--line);"></i> Boş masa</span>
+        <span><i style="background:var(--green-bg); border:2px solid var(--green);"></i> Bu masada gəlişi qeyd olunan qonaq var</span>
         <span><i style="background:var(--gold);"></i> Axtarılan qonağın masası</span>
       </div>
     </div>
@@ -335,8 +355,23 @@
     <div class="panel">
       <button class="panel-close" id="closePanel">&times;</button>
       <h3>İnzibatçı Paneli</h3>
-      <p class="desc">Bütün dəyişikliklər dərhal bütün cihazlara ötürülür — əlavə düyməyə ehtiyac yoxdur.</p>
+      <p class="desc" id="panelDesc">Bütün dəyişikliklər dərhal bütün cihazlara ötürülür — əlavə düyməyə ehtiyac yoxdur.</p>
 
+      <div id="loginGate">
+        <div class="field-row">
+          <input type="email" id="loginEmail" placeholder="Email">
+        </div>
+        <div class="field-row">
+          <input type="password" id="loginPassword" placeholder="Parol">
+        </div>
+        <button class="btn btn-primary" id="loginBtn">Daxil ol</button>
+        <div class="msg" id="loginMsg"></div>
+      </div>
+
+      <div id="adminContent" style="display:none;">
+      <div style="text-align:right; margin:-10px 0 10px;">
+        <button class="btn-undo" id="logoutBtn">çıxış et</button>
+      </div>
       <div class="tabs">
         <div class="tab active" data-tab="add">Tək əlavə et</div>
         <div class="tab" data-tab="bulk">Toplu əlavə et</div>
@@ -386,6 +421,16 @@
         <div class="msg" id="settingsMsg"></div>
         <p class="desc" style="margin-top:16px;">Ümumi masa sayı: sıra × sırada masa.</p>
       </div>
+      </div><!-- /adminContent -->
+    </div>
+  </div>
+
+  <div class="overlay" id="tableOverlay">
+    <div class="panel table-modal-panel">
+      <button class="panel-close" id="closeTableModal">&times;</button>
+      <h3 id="tableModalTitle">Masa</h3>
+      <div class="tg-summary" id="tableModalSummary"></div>
+      <div class="tg-list" id="tableModalList"></div>
     </div>
   </div>
 
@@ -395,6 +440,9 @@ import {
   getFirestore, collection, doc, addDoc, setDoc, updateDoc, deleteDoc,
   onSnapshot, writeBatch, getDocs, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import {
+  getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBvCQP4V2ergiUXjLY0ZXOX40U4kB5-ITQ",
@@ -407,6 +455,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
 const guestsCol = collection(db, 'guests');
 const layoutRef = doc(db, 'settings', 'layout');
 
@@ -447,6 +496,7 @@ function renderHall(){
       t.className = 'table-el';
       t.dataset.table = tableNum;
       t.textContent = tableNum;
+      t.addEventListener('click', ()=> openTableModal(t.dataset.table));
       rowEl.appendChild(t);
       tableNum++;
     }
@@ -456,6 +506,27 @@ function renderHall(){
   const g = guests.find(x => x.id === currentGuestId);
   if(g && g.table >= 1 && g.table <= totalTables()) highlightTable(g.table);
 }
+
+function openTableModal(tableNumber){
+  const num = parseInt(tableNumber, 10);
+  const list = guests.filter(g => g.table === num).sort((a,b)=> az(a.name).localeCompare(az(b.name)));
+  document.getElementById('tableModalTitle').textContent = `Masa ${num}`;
+  const listEl = document.getElementById('tableModalList');
+  const summaryEl = document.getElementById('tableModalSummary');
+  if(list.length === 0){
+    summaryEl.textContent = '';
+    listEl.innerHTML = '<div class="empty-note">Bu masaya hələ qonaq təyin edilməyib</div>';
+  }else{
+    const arrivedCount = list.filter(g=>g.arrived).length;
+    summaryEl.textContent = `${arrivedCount} / ${list.length} qonaq gəlib`;
+    listEl.innerHTML = list.map(g =>
+      `<div class="tg-item ${g.arrived ? 'arrived' : 'pending'}"><span class="tg-dot"></span>${escapeHtml(g.name)}</div>`
+    ).join('');
+  }
+  document.getElementById('tableOverlay').classList.add('show');
+}
+document.getElementById('closeTableModal').addEventListener('click', ()=> document.getElementById('tableOverlay').classList.remove('show'));
+document.getElementById('tableOverlay').addEventListener('click', (e)=>{ if(e.target.id === 'tableOverlay') e.currentTarget.classList.remove('show'); });
 
 function clearHighlight(){
   document.querySelectorAll('.table-el.highlight').forEach(el=>el.classList.remove('highlight'));
@@ -549,6 +620,38 @@ const overlay = document.getElementById('overlay');
 document.getElementById('gearBtn').addEventListener('click', ()=>{ overlay.classList.add('show'); refreshAdmin(); });
 document.getElementById('closePanel').addEventListener('click', ()=> overlay.classList.remove('show'));
 overlay.addEventListener('click', (e)=>{ if(e.target === overlay) overlay.classList.remove('show'); });
+
+const loginGate = document.getElementById('loginGate');
+const adminContent = document.getElementById('adminContent');
+const panelDesc = document.getElementById('panelDesc');
+
+onAuthStateChanged(auth, (user)=>{
+  if(user){
+    loginGate.style.display = 'none';
+    adminContent.style.display = 'block';
+    panelDesc.textContent = 'Bütün dəyişikliklər dərhal bütün cihazlara ötürülür.';
+  }else{
+    loginGate.style.display = 'block';
+    adminContent.style.display = 'none';
+    panelDesc.textContent = 'Davam etmək üçün daxil olun.';
+  }
+});
+
+document.getElementById('loginBtn').addEventListener('click', async ()=>{
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const msg = document.getElementById('loginMsg');
+  if(!email || !password){ msg.textContent = 'Email və parolu daxil edin.'; msg.className = 'msg err'; return; }
+  try{
+    await signInWithEmailAndPassword(auth, email, password);
+    msg.textContent = '';
+    document.getElementById('loginPassword').value = '';
+  }catch(e){
+    msg.textContent = 'Giriş uğursuz oldu — email və ya parol yanlışdır.';
+    msg.className = 'msg err';
+  }
+});
+document.getElementById('logoutBtn').addEventListener('click', ()=> signOut(auth));
 
 document.querySelectorAll('.tab').forEach(tab=>{
   tab.addEventListener('click', ()=>{
