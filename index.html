@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="az">
 <head>
@@ -69,18 +70,27 @@
     position: relative;
     overflow:hidden;
   }
+  .top-video{
+    position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+    opacity:0.92; z-index:0;
+  }
+  .top-overlay{
+    position:absolute; inset:0; z-index:0;
+    background: linear-gradient(180deg, rgba(22,35,61,0.15) 0%, rgba(31,49,79,0.35) 100%);
+  }
   .top::after{
     content:"";
     position:absolute; left:0; right:0; bottom:0; height:3px;
     background: linear-gradient(90deg, transparent, var(--gold-bright), transparent);
   }
   .top-inner{ max-width: 920px; margin:0 auto; text-align:center; position:relative; z-index:1; }
-  .eyebrow{ font-size: 13px; letter-spacing: 0.04em; color: var(--gold-bright); margin: 0 0 10px; }
   .top h1{
     font-family:'Fraunces', serif; font-weight:600;
     font-size: clamp(28px, 4.4vw, 42px); margin: 0 0 8px; letter-spacing: -0.01em;
+    text-shadow: 0 2px 16px rgba(0,0,0,0.65), 0 1px 3px rgba(0,0,0,0.5);
   }
-  .top p.sub{ margin:0; color: rgba(243,239,228,0.72); font-size:15px; }
+  .top p.sub{ margin:0; color: rgba(243,239,228,0.95); font-size:15px; text-shadow: 0 1px 10px rgba(0,0,0,0.6); }
+  .eyebrow{ font-size: 13px; letter-spacing: 0.04em; color: var(--gold-bright); margin: 0 0 10px; text-shadow: 0 1px 8px rgba(0,0,0,0.4); }
 
   .sync-pill{
     display:inline-flex; align-items:center; gap:6px;
@@ -297,6 +307,10 @@
 <body>
 
   <div class="top">
+    <video class="top-video" autoplay muted loop playsinline poster="">
+      <source src="https://socgov.az/site/assets26/videos/hero.mp4" type="video/mp4">
+    </video>
+    <div class="top-overlay"></div>
     <div class="top-inner">
       <p class="eyebrow">XANKƏNDİ KONQRES MƏRKƏZİ</p>
       <h1>Qonaq Yerləşdirmə Sistemi</h1>
