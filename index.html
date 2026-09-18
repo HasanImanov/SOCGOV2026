@@ -4,6 +4,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta name="app-version" content="2026-09-19-1">
 <title>Xankəndi Konqres Mərkəzi — Qonaq Yerləşdirmə</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -90,7 +94,12 @@
     text-shadow: 0 2px 16px rgba(0,0,0,0.65), 0 1px 3px rgba(0,0,0,0.5);
   }
   .top p.sub{ margin:0; color: rgba(243,239,228,0.95); font-size:15px; text-shadow: 0 1px 10px rgba(0,0,0,0.6); }
-  .eyebrow{ font-size: 13px; letter-spacing: 0.04em; color: #e6e3dd; margin: 0 0 10px; text-shadow: 0 1px 8px rgba(0,0,0,0.4); }
+  .eyebrow{
+    display:inline-block; font-size: 13px; letter-spacing: 0.06em; color: #e6e3dd;
+    margin: 0 0 14px; text-shadow: 0 1px 8px rgba(0,0,0,0.4);
+    background: rgba(14,22,38,0.55); padding:6px 16px; border-radius:20px;
+    border: 1px solid rgba(217,184,118,0.35);
+  }
 
   .sync-pill{
     display:inline-flex; align-items:center; gap:6px;
@@ -836,6 +845,21 @@ onSnapshot(layoutRef, (snap) => {
 })();
 
 renderHall();
+
+// ---- Auto-update: if a newer version is deployed, reload this tab automatically ----
+const CURRENT_APP_VERSION = document.querySelector('meta[name="app-version"]')?.content || '';
+async function checkForUpdate(){
+  try{
+    const res = await fetch(window.location.href, { cache: 'no-store' });
+    const html = await res.text();
+    const match = html.match(/<meta name="app-version" content="([^"]*)"/);
+    const latest = match ? match[1] : null;
+    if(latest && CURRENT_APP_VERSION && latest !== CURRENT_APP_VERSION){
+      window.location.reload();
+    }
+  }catch(e){ /* offline or blocked — ignore, try again next interval */ }
+}
+setInterval(checkForUpdate, 60000); // check every 60 seconds
 </script>
 </body>
 </html>
