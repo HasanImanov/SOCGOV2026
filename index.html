@@ -6,7 +6,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<meta name="app-version" content="2026-09-19-3">
+<meta name="app-version" content="2026-09-19-4">
 <title>Xankəndi Konqres Mərkəzi — Qonaq Yerləşdirmə</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -269,11 +269,12 @@
   footer{ text-align:center; color: var(--ink-soft); font-size:12px; padding: 0 20px 34px; }
 
   .app-toast{
-    position: fixed; left:50%; bottom:28px; transform: translateX(-50%) translateY(20px);
+    position: fixed; left:50%; top: calc(env(safe-area-inset-top, 0px) + 18px);
+    transform: translateX(-50%) translateY(-20px);
     background: var(--green); color:#fff; font-weight:700; font-size:14px;
     padding: 12px 22px; border-radius: 999px; box-shadow: var(--shadow);
     opacity:0; pointer-events:none; transition: opacity .25s ease, transform .25s ease;
-    z-index: 999;
+    z-index: 9999; max-width: calc(100vw - 32px); text-align:center;
   }
   .app-toast.show{ opacity:1; transform: translateX(-50%) translateY(0); }
 
