@@ -6,11 +6,18 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<meta name="app-version" content="bus-2026-10-18-3">
+<meta name="app-version" content="bus-2026-10-18-5">
 <title>SOCGOV 2026 — Avtobus Davamiyyəti</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
+  button,input,textarea{font-family:'Inter','Segoe UI',Arial,sans-serif;}
+  .abus{border:1px solid var(--line); border-radius:12px; padding:12px; margin-bottom:10px; background:var(--paper);}
+  .abus-h{display:flex; justify-content:space-between; align-items:center; gap:8px; font-weight:700; font-size:16px;}
+  .abus-h span{font-weight:400; color:var(--ink-soft); font-size:13px;}
+  .abus ol{margin:8px 0 10px; padding-left:24px; font-size:16px; line-height:1.55;}
+  .abus .btn{padding:8px 12px; font-size:13px;}
+
   :root{
     --navy:#16233d; --navy-2:#1f314f;
     --gold:#bd9757; --gold-bright:#d9b876;
@@ -39,7 +46,7 @@
   html,body{margin:0;padding:0;}
   body{
     background:var(--paper); color:var(--ink);
-    font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+    font-family:'Inter','Segoe UI',Arial,sans-serif; font-size:16px;
     min-height:100vh; -webkit-font-smoothing:antialiased;
   }
 
@@ -78,7 +85,7 @@
 
   .search-input{
     width:100%; border:1.5px solid var(--line); border-radius:var(--radius-m); padding:13px 14px;
-    font-size:16px; font-family:'Inter',sans-serif; background:var(--card-bg); color:var(--ink);
+    font-size:16px; font-family:'Inter','Segoe UI',Arial,sans-serif; background:var(--card-bg); color:var(--ink);
     box-shadow:var(--shadow); outline:none;
   }
   .search-input:focus{border-color:var(--gold);}
@@ -87,7 +94,7 @@
   .bus-chips{display:flex; gap:8px; flex-wrap:wrap; padding:4px 0 12px;}
   .chip{
     flex:1 1 140px; border:1.5px solid var(--line); background:var(--card-bg); color:var(--ink);
-    border-radius:12px; padding:11px 14px; font-family:'Inter',sans-serif; font-size:14px; font-weight:700;
+    border-radius:12px; padding:11px 14px; font-family:'Inter','Segoe UI',Arial,sans-serif; font-size:14px; font-weight:700;
     cursor:pointer; display:flex; flex-direction:column; align-items:center; line-height:1.2; white-space:nowrap;
   }
   .chip span{font-size:11px; font-weight:500; color:var(--ink-soft);}
@@ -112,15 +119,15 @@
   .bar-fill{height:100%; background:var(--green); width:0; transition:width .3s ease;}
   .sum-sub{font-size:12.5px; color:var(--red); margin-top:8px; font-weight:600;}
 
-  .btn{border:none; border-radius:var(--radius-s); padding:10px 16px; font-size:14px; font-weight:600; cursor:pointer; font-family:'Inter',sans-serif;}
+  .btn{border:none; border-radius:var(--radius-s); padding:10px 16px; font-size:14px; font-weight:600; cursor:pointer; font-family:'Inter','Segoe UI',Arial,sans-serif;}
   .btn-primary{background:var(--navy); color:#fff;}
   .btn-ghost{background:var(--paper-2); color:var(--ink);}
   .btn-danger{background:#7d2634; color:#fff;}
   .btn-reset{background:var(--paper-2); color:var(--ink); white-space:nowrap; font-size:13px; padding:10px 12px;}
-  .btn-link{background:none; border:none; color:var(--ink-soft); font-size:12.5px; cursor:pointer; text-decoration:underline; font-family:'Inter',sans-serif;}
+  .btn-link{background:none; border:none; color:var(--ink-soft); font-size:12.5px; cursor:pointer; text-decoration:underline; font-family:'Inter','Segoe UI',Arial,sans-serif;}
 
   .tabs{display:flex; gap:8px; width:100%;}
-  .tabs button{flex:1; border:2px solid var(--line); background:var(--card-bg); color:var(--ink); border-radius:12px; padding:12px 8px; font-size:15px; font-weight:800; font-family:'Inter',sans-serif; cursor:pointer;}
+  .tabs button{flex:1; border:2px solid var(--line); background:var(--card-bg); color:var(--ink); border-radius:12px; padding:12px 8px; font-size:15px; font-weight:800; font-family:'Inter','Segoe UI',Arial,sans-serif; cursor:pointer;}
   .tabs button b{margin-left:4px;}
   .tabs button.red.on{background:var(--red); border-color:var(--red); color:#fff;}
   .tabs button.green.on{background:var(--green); border-color:var(--green); color:#fff;}
@@ -128,13 +135,13 @@
   .seg{display:flex; gap:6px; flex-wrap:wrap; flex:1;}
   .seg button{
     border:1.5px solid var(--line); background:var(--card-bg); color:var(--ink); border-radius:999px;
-    padding:7px 12px; font-size:12.5px; font-weight:700; font-family:'Inter',sans-serif; cursor:pointer;
+    padding:7px 12px; font-size:12.5px; font-weight:700; font-family:'Inter','Segoe UI',Arial,sans-serif; cursor:pointer;
   }
   .seg button.on{background:var(--navy); color:#fff; border-color:var(--navy);}
   .sort-seg{display:flex; gap:6px;}
   .sort-seg button{
     border:none; background:none; color:var(--ink-soft); font-size:12px; font-weight:600;
-    font-family:'Inter',sans-serif; cursor:pointer; text-decoration:underline; padding:4px;
+    font-family:'Inter','Segoe UI',Arial,sans-serif; cursor:pointer; text-decoration:underline; padding:4px;
   }
   .sort-seg button.on{color:var(--ink); font-weight:800; text-decoration:none;}
 
@@ -142,7 +149,7 @@
   .prow{display:flex; gap:8px; align-items:stretch;}
   .person{
     flex:1; min-width:0; display:flex; align-items:center; gap:12px; min-height:58px; padding:10px 12px;
-    border-radius:12px; border:2px solid; text-align:left; font-family:'Inter',sans-serif; cursor:pointer;
+    border-radius:12px; border:2px solid; text-align:left; font-family:'Inter','Segoe UI',Arial,sans-serif; cursor:pointer;
     -webkit-tap-highlight-color:transparent; user-select:none; transition:background .15s ease,border-color .15s ease,transform .08s ease;
   }
   .person:active{transform:scale(0.985);}
@@ -186,10 +193,10 @@
   .field-row{display:flex; gap:10px; margin-bottom:10px; flex-wrap:wrap;}
   .field-row input{
     flex:1; min-width:120px; border:1px solid var(--line); border-radius:var(--radius-s); padding:10px 11px;
-    font-size:16px; font-family:'Inter',sans-serif; background:var(--paper); color:var(--ink);
+    font-size:16px; font-family:'Inter','Segoe UI',Arial,sans-serif; background:var(--paper); color:var(--ink);
   }
   textarea{
-    width:100%; min-height:120px; resize:vertical; font-family:'Inter',sans-serif; font-size:15px;
+    width:100%; min-height:160px; resize:vertical; font-family:'Inter','Segoe UI',Arial,sans-serif; font-size:16px; line-height:1.5;
     border:1px solid var(--line); border-radius:var(--radius-s); padding:10px 11px; background:var(--paper); color:var(--ink);
   }
   .btn-row{display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;}
@@ -278,7 +285,7 @@
       <div id="adminContent" style="display:none;">
         <div style="text-align:right;"><button class="btn-link" id="logoutBtn">çıxış et</button></div>
 
-        <h4 style="border-top:none; padding-top:0; margin-top:4px;">Yeni avtobus</h4>
+        <h4 style="border-top:none; padding-top:0; margin-top:4px;">Yeni avtobus əlavə et</h4>
         <div class="field-row">
           <input type="text" id="newBusPlate" placeholder="Avtobus nömrəsi (məs. 90 JJ 999)" autocapitalize="characters">
         </div>
@@ -287,24 +294,8 @@
         <div class="btn-row"><button class="btn btn-primary" id="addBusBtn">Avtobus əlavə et</button></div>
         <div class="msg" id="addBusMsg"></div>
 
-        <h4>Seçilmiş avtobus: <span id="selBusName">—</span></h4>
-        <p class="hint">Avtobusu yuxarıdakı düymələrdən seç, sonra burada dəyiş.</p>
-        <div class="field-row">
-          <input type="text" id="renameInput" placeholder="Yeni nömrə" autocapitalize="characters">
-          <button class="btn btn-ghost" id="renameBtn">Nömrəni dəyiş</button>
-        </div>
-
-        <h4>Sərnişin adları</h4>
-        <p class="hint">Hər sətirdə bir ad. Siyahıda hər adın yanındakı ✎ düyməsi ilə tək adı dəyişə və ya silə bilərsən.</p>
-        <textarea id="namesText" placeholder="Həsən Əliyev&#10;Aynur Məmmədova"></textarea>
-        <div class="btn-row">
-          <button class="btn btn-primary" id="namesAddBtn">Siyahının sonuna əlavə et</button>
-          <button class="btn btn-ghost" id="namesReplaceBtn">Siyahını əvəz et</button>
-        </div>
-        <div class="btn-row">
-          <button class="btn btn-ghost" id="clearNamesBtn">Bütün adları sil</button>
-          <button class="btn btn-danger" id="deleteBusBtn">Avtobusu sil</button>
-        </div>
+        <h4>Əlavə edilmiş avtobuslar</h4>
+        <div id="adminBusList"></div>
         <div class="msg" id="busMsg"></div>
       </div>
     </div>
@@ -463,10 +454,18 @@ function renderBusView(){
   document.querySelectorAll('#filterSeg button').forEach(b => b.classList.toggle('on', b.dataset.f === filterMode));
 }
 
-function refreshAdmin(){
-  const bus = currentBus();
-  $('selBusName').textContent = bus ? bus.name : '—';
-  $('renameInput').value = bus ? bus.name : '';
+async function refreshAdmin(){
+  const box = $('adminBusList');
+  if(!box) return;
+  if(!isAdmin){ box.innerHTML = ''; return; }
+  if(buses.length === 0){ box.innerHTML = '<p class="hint">Hələ avtobus yoxdur.</p>'; return; }
+  const snaps = await Promise.all(buses.map(b => getDocs(peopleCol(b.id)).catch(() => null)));
+  box.innerHTML = buses.map((b, i) => {
+    const names = snaps[i] ? snaps[i].docs.map(d => d.data()).filter(p => p.name).sort((x, y) => (x.no || 0) - (y.no || 0)).map(p => p.name) : [];
+    return `<div class="abus"><div class="abus-h">${escapeHtml(b.name)}<span>${names.length} nəfər</span></div>` +
+      (names.length ? `<ol>${names.map(n => `<li>${escapeHtml(n)}</li>`).join('')}</ol>` : '<p class="hint">Ad yoxdur.</p>') +
+      `<button class="btn btn-danger" data-delbus="${b.id}">Avtobusu sil</button></div>`;
+  }).join('');
 }
 
 // ---------- Bus selection and live data ----------
@@ -659,87 +658,23 @@ $('addBusBtn').addEventListener('click', async () => {
     $('newBusPlate').value = '';
     $('newBusNames').value = '';
     setMsg('addBusMsg', `${plate} əlavə olundu (${names.length} nəfər).`, 'ok');
-    selectBus(newRef.id);
+    showToast('✓ Avtobus əlavə olundu');
+    $('newBusPlate').focus();
+    setTimeout(refreshAdmin, 400);
   }catch(err){
     console.error(err);
     setMsg('addBusMsg', 'Xəta baş verdi — Firestore qaydalarını yoxlayın.', 'err');
   }
 });
 
-$('renameBtn').addEventListener('click', async () => {
-  const bus = currentBus();
-  const plate = cleanPlate($('renameInput').value);
-  if(!bus){ setMsg('busMsg', 'Əvvəlcə avtobus seçin.', 'err'); return; }
-  if(!plate){ setMsg('busMsg', 'Nömrə boş ola bilməz.', 'err'); return; }
-  if(buses.some(b => b.id !== bus.id && normPlate(b.name) === normPlate(plate))){ setMsg('busMsg', 'Bu nömrəli avtobus artıq var.', 'err'); return; }
+$('adminBusList').addEventListener('click', async (e) => {
+  const btn = e.target.closest('[data-delbus]');
+  if(!btn) return;
+  const bus = buses.find(b => b.id === btn.dataset.delbus);
+  if(!bus || !confirm(`"${bus.name}" avtobusu tamamilə silinsin? Bütün adlar silinəcək.`)) return;
   try{
-    await updateDoc(busRef(bus.id), { name: plate });
-    setMsg('busMsg', 'Nömrə dəyişdi.', 'ok');
-  }catch(err){ console.error(err); setMsg('busMsg', 'Xəta baş verdi.', 'err'); }
-});
-
-$('namesAddBtn').addEventListener('click', async () => {
-  const bus = currentBus();
-  if(!bus){ setMsg('busMsg', 'Əvvəlcə avtobus seçin.', 'err'); return; }
-  const names = parseNames($('namesText').value);
-  if(names.length === 0){ setMsg('busMsg', 'Əlavə ediləcək ad tapılmadı.', 'err'); return; }
-  if(people.length + names.length > MAX_PEOPLE){ setMsg('busMsg', `Bir avtobusa ən çox ${MAX_PEOPLE} ad əlavə etmək olar.`, 'err'); return; }
-  const startNo = people.reduce((m, p) => Math.max(m, p.no || 0), 0);
-  try{
-    const ops = names.map((name, i) => {
-      const r = doc(peopleCol(bus.id));
-      return (batch) => batch.set(r, { no: startNo + i + 1, name, seated: false, seatedAt: null });
-    });
-    ops.push((batch) => batch.update(busRef(bus.id), { count: people.length + names.length }));
-    await commitOps(ops);
-    $('namesText').value = '';
-    setMsg('busMsg', `${names.length} ad əlavə olundu.`, 'ok');
-  }catch(err){ console.error(err); setMsg('busMsg', 'Xəta baş verdi.', 'err'); }
-});
-
-async function deleteAllPeopleOps(busId){
-  const snap = await getDocs(peopleCol(busId));
-  return snap.docs.map(d => (batch) => batch.delete(d.ref));
-}
-
-$('namesReplaceBtn').addEventListener('click', async () => {
-  const bus = currentBus();
-  if(!bus){ setMsg('busMsg', 'Əvvəlcə avtobus seçin.', 'err'); return; }
-  const names = parseNames($('namesText').value);
-  if(names.length === 0){ setMsg('busMsg', 'Əvəz ediləcək ad tapılmadı.', 'err'); return; }
-  if(names.length > MAX_PEOPLE){ setMsg('busMsg', `Bir avtobusa ən çox ${MAX_PEOPLE} ad əlavə etmək olar.`, 'err'); return; }
-  if(!confirm(`${bus.name} avtobusunun mövcud siyahısı silinib ${names.length} yeni adla əvəz olunsun? "Avtobusda" işarələri də sıfırlanacaq.`)) return;
-  try{
-    const ops = await deleteAllPeopleOps(bus.id);
-    names.forEach((name, i) => {
-      const r = doc(peopleCol(bus.id));
-      ops.push((batch) => batch.set(r, { no: i + 1, name, seated: false, seatedAt: null }));
-    });
-    ops.push((batch) => batch.update(busRef(bus.id), { count: names.length }));
-    await commitOps(ops);
-    $('namesText').value = '';
-    setMsg('busMsg', `Siyahı əvəz olundu — ${names.length} nəfər.`, 'ok');
-  }catch(err){ console.error(err); setMsg('busMsg', 'Xəta baş verdi.', 'err'); }
-});
-
-$('clearNamesBtn').addEventListener('click', async () => {
-  const bus = currentBus();
-  if(!bus){ setMsg('busMsg', 'Əvvəlcə avtobus seçin.', 'err'); return; }
-  if(!confirm(`${bus.name} avtobusunun bütün adları silinsin?`)) return;
-  try{
-    const ops = await deleteAllPeopleOps(bus.id);
-    ops.push((batch) => batch.update(busRef(bus.id), { count: 0 }));
-    await commitOps(ops);
-    setMsg('busMsg', 'Bütün adlar silindi.', 'ok');
-  }catch(err){ console.error(err); setMsg('busMsg', 'Xəta baş verdi.', 'err'); }
-});
-
-$('deleteBusBtn').addEventListener('click', async () => {
-  const bus = currentBus();
-  if(!bus){ setMsg('busMsg', 'Əvvəlcə avtobus seçin.', 'err'); return; }
-  if(!confirm(`"${bus.name}" avtobusu tamamilə silinsin? Bütün adlar silinəcək.`)) return;
-  try{
-    const ops = await deleteAllPeopleOps(bus.id);
+    const snap = await getDocs(peopleCol(bus.id));
+    const ops = snap.docs.map(d => (batch) => batch.delete(d.ref));
     ops.push((batch) => batch.delete(busRef(bus.id)));
     await commitOps(ops);
     setMsg('busMsg', 'Avtobus silindi.', 'ok');
