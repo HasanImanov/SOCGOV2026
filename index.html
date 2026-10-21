@@ -1,1 +1,964 @@
-file:///C:/Users/HP/Downloads/index%20(20).html
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta name="app-version" content="2026-10-21-2">
+<title>Xankəndi Konqres Mərkəzi — Qonaq Yerləşdirmə</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy: #16233d;
+    --navy-2: #1f314f;
+    --gold: #bd9757;
+    --gold-bright: #d9b876;
+    --paper: #eef4fb;
+    --paper-2: #e1ecf8;
+    --ink: #1a2436;
+    --ink-soft: #5c6b82;
+    --line: rgba(22,35,61,0.12);
+    --burgundy: #7d2634;
+    --green: #3f7a3d;
+    --green-bg: #eaf3e6;
+    --card-bg: #ffffff;
+    --shadow: 0 10px 30px rgba(22,35,61,0.10);
+    --radius-s: 6px;
+    --radius-m: 12px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper: #12151c;
+      --paper-2: #171b24;
+      --ink: #ece9e1;
+      --ink-soft: #a3a7b3;
+      --line: rgba(236,233,225,0.12);
+      --card-bg: #1b2029;
+      --navy: #0e1626;
+      --navy-2: #16233d;
+      --green-bg: #16251a;
+      --shadow: 0 10px 30px rgba(0,0,0,0.45);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper: #12151c;
+    --paper-2: #171b24;
+    --ink: #ece9e1;
+    --ink-soft: #a3a7b3;
+    --line: rgba(236,233,225,0.12);
+    --card-bg: #1b2029;
+    --navy: #0e1626;
+    --navy-2: #16233d;
+    --green-bg: #16251a;
+    --shadow: 0 10px 30px rgba(0,0,0,0.45);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .top{
+    background: linear-gradient(180deg, var(--navy) 0%, var(--navy-2) 100%);
+    color: #f3efe4;
+    padding: 34px 20px 46px;
+    position: relative;
+    overflow:hidden;
+  }
+  .top-video{
+    position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+    opacity:0.92; z-index:0;
+  }
+  .top-overlay{
+    position:absolute; inset:0; z-index:0;
+    background: linear-gradient(180deg, rgba(22,35,61,0.15) 0%, rgba(31,49,79,0.35) 100%);
+  }
+  .top::after{
+    content:"";
+    position:absolute; left:0; right:0; bottom:0; height:3px;
+    background: linear-gradient(90deg, transparent, var(--gold-bright), transparent);
+  }
+  .top-inner{ max-width: 920px; margin:0 auto; text-align:center; position:relative; z-index:1; }
+  .top h1{
+    font-family:'Fraunces', serif; font-weight:600;
+    font-size: clamp(28px, 4.4vw, 42px); margin: 0 0 8px; letter-spacing: -0.01em;
+    text-shadow: 0 2px 16px rgba(0,0,0,0.65), 0 1px 3px rgba(0,0,0,0.5);
+  }
+  .top p.sub{ margin:0; color: rgba(243,239,228,0.95); font-size:15px; text-shadow: 0 1px 10px rgba(0,0,0,0.6); }
+  .eyebrow{
+    display:inline-block; font-size: 13px; letter-spacing: 0.06em; color: var(--gold-bright);
+    margin: 0 0 14px; text-shadow: 0 1px 8px rgba(0,0,0,0.4);
+    background: rgba(14,22,38,0.55); padding:6px 16px; border-radius:20px;
+    border: 1px solid rgba(217,184,118,0.35);
+  }
+
+  .sync-pill{
+    display:inline-flex; align-items:center; gap:6px;
+    margin-top:14px; padding:5px 12px; border-radius:20px;
+    background: rgba(255,255,255,0.1); font-size:12px; color: rgba(243,239,228,0.85);
+  }
+  .sync-dot{ width:7px; height:7px; border-radius:50%; background:#7bc47f; }
+  .sync-dot.bad{ background:#d9736b; }
+  .sync-dot.wait{ background: var(--gold-bright); animation: pulse 1.2s infinite; }
+  @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:0.35;} }
+
+  .search-wrap{ max-width: 640px; margin: -26px auto 0; padding: 0 20px; position:relative; z-index:2; }
+  .search-box{
+    background: var(--card-bg); border-radius: var(--radius-m); box-shadow: var(--shadow);
+    padding: 8px; display:flex; gap:8px; align-items:center; border: 1px solid var(--line);
+  }
+  .search-box input{
+    flex:1; border:none; outline:none; background:transparent;
+    font-size: 17px; padding: 12px 10px; color:var(--ink); font-family:'Inter',sans-serif;
+  }
+  .search-box input::placeholder{ color: var(--ink-soft); }
+  .search-icon{ padding-left:10px; color: var(--ink-soft); display:flex; }
+
+  .search-anchor{ position:relative; }
+  .suggestions{
+    position:absolute; left:0; right:0; top:calc(100% + 6px); z-index:30;
+    background: var(--card-bg); border-radius: var(--radius-m);
+    box-shadow: 0 14px 36px rgba(22,35,61,0.18); overflow:hidden;
+    max-height: 320px; overflow-y:auto;
+    border: 1px solid var(--line); display:none;
+  }
+  .suggestions.show{ display:block; }
+  .result-slot{ min-height: 186px; }
+  .result-slot.empty::before{
+    content:'Nəticə burada görünəcək'; display:flex; align-items:center; justify-content:center;
+    margin-top:16px; min-height:170px; border:1.5px dashed var(--line); border-radius: var(--radius-m);
+    color: var(--ink-soft); font-size:13.5px;
+  }
+  .sugg-item{
+    padding: 12px 18px; cursor:pointer; display:flex; justify-content:space-between; align-items:center;
+    border-bottom: 1px solid var(--line); font-size:15px;
+  }
+  .sugg-item:last-child{ border-bottom:none; }
+  .sugg-item:hover, .sugg-item.active{ background: var(--paper-2); }
+  .sugg-name{ font-weight:600; }
+  .sugg-table{ color: var(--ink-soft); font-size:13px; }
+
+  .result-card{
+    margin: 16px 20px 0; max-width:600px; margin-left:auto; margin-right:auto;
+    background: var(--card-bg); border-radius: var(--radius-m); box-shadow: var(--shadow);
+    border: 1px solid var(--line); padding: 22px 24px; display:none;
+    animation: pop .28s ease;
+  }
+  .result-card.show{ display:flex; flex-direction:column; gap:16px; }
+  @keyframes pop{ from{ opacity:0; transform: translateY(-6px);} to{opacity:1; transform:translateY(0);} }
+  .result-top{ display:flex; align-items:center; gap:18px; justify-content:space-between; }
+  .result-name{ font-family:'Fraunces', serif; font-size:20px; font-weight:600; }
+  .result-loc{ color: var(--ink-soft); font-size:13.5px; margin-top:4px; }
+  .result-table{
+    text-align:center; background: var(--navy); color:#fff; border-radius: var(--radius-s);
+    padding: 10px 18px; min-width:88px; flex-shrink:0;
+  }
+  .result-table .num{ font-family:'Fraunces', serif; font-size:28px; font-weight:700; color: var(--gold-bright); line-height:1; }
+  .result-table .lbl{ font-size:10.5px; letter-spacing:0.05em; color: rgba(255,255,255,0.7); margin-top:4px; }
+
+  .arrive-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+  .arrived-badge{
+    display:inline-flex; align-items:center; gap:6px; background: var(--green-bg); color: var(--green);
+    font-weight:600; font-size:13.5px; padding:8px 14px; border-radius: var(--radius-s);
+  }
+  .btn-arrive{
+    border:none; border-radius: var(--radius-s); padding:11px 18px; font-size:14.5px; font-weight:700;
+    cursor:pointer; background: var(--green); color:#fff; font-family:'Inter',sans-serif;
+  }
+  .btn-arrive:hover{ opacity:0.9; }
+  .btn-undo{
+    border:none; background:none; color: var(--ink-soft); font-size:12.5px; cursor:pointer; text-decoration:underline;
+  }
+
+  .not-found{
+    margin: 16px 20px 0; max-width:600px; margin-left:auto; margin-right:auto;
+    text-align:center; color: var(--ink-soft); font-size:14px; display:none;
+  }
+  .not-found.show{ display:block; }
+
+  .map-section{ max-width: 1040px; margin: 40px auto 0; padding: 0 20px 60px; }
+  .map-header{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:16px; flex-wrap:wrap; gap:8px; }
+  .map-header h2{ font-family:'Fraunces', serif; font-weight:600; font-size:20px; margin:0; }
+  .map-header .hint{ font-size:12.5px; color: var(--ink-soft); }
+
+  .hall{
+    background: var(--card-bg); border-radius: var(--radius-m); border: 1px solid var(--line);
+    box-shadow: var(--shadow); padding: 28px 20px 34px; overflow-x:auto;
+  }
+  .stage{
+    background: var(--navy); color: var(--gold-bright); text-align:center;
+    font-family:'Fraunces', serif; letter-spacing: 0.04em; font-size: 13px; padding: 10px 0;
+    border-radius: var(--radius-s); margin: 0 auto 30px; max-width: 320px;
+  }
+  .rows{ display:flex; flex-direction:column; gap:22px; align-items:center; min-width: 340px; }
+  .row{ display:flex; gap:16px; justify-content:center; flex-wrap:nowrap; }
+  .table-el{
+    width:56px; height:56px; border-radius:50%; background: var(--paper-2); border: 2px solid var(--line);
+    display:flex; align-items:center; justify-content:center; font-weight:700; font-size:15px; color: var(--ink);
+    flex-shrink:0; transition: transform .35s ease, box-shadow .35s ease, background .35s ease, border-color .35s ease;
+    cursor:pointer; position:relative;
+  }
+  .table-el:hover{ border-color: var(--gold); }
+  .table-el.has-arrived{
+    background: var(--green-bg);
+    border-color: var(--green);
+    color: var(--green);
+  }
+  .table-el.partial{
+    background: conic-gradient(var(--green-line) calc(var(--p) * 1%), var(--paper-2) 0);
+    border-color: var(--green-line);
+  }
+  .table-el.full{
+    background: linear-gradient(145deg, #3dbb82 0%, #17895a 55%, #0e6b44 100%);
+    border-color: #d9b876; color:#fff; text-shadow: 0 1px 2px rgba(0,0,0,0.35);
+    box-shadow: inset 0 2px 3px rgba(255,255,255,0.45), inset 0 -3px 6px rgba(0,0,0,0.22), 0 0 0 2px rgba(217,184,118,0.55), 0 6px 14px rgba(15,107,68,0.38);
+  }
+  .table-el.highlight{
+    background: var(--gold); border-color: var(--gold-bright); color: var(--navy); transform: scale(1.28);
+    box-shadow: 0 0 0 6px rgba(189,151,87,0.22), 0 8px 18px rgba(189,151,87,0.35); z-index:3;
+  }
+  @keyframes ring{ 0%{ box-shadow: 0 0 0 0 rgba(189,151,87,0.5);} 100%{ box-shadow: 0 0 0 14px rgba(189,151,87,0);} }
+  .table-el.highlight::after{ content:""; position:absolute; inset:-2px; border-radius:50%; animation: ring 1.1s ease-out 2; }
+
+  .legend{ display:flex; gap:18px; justify-content:center; margin-top:26px; flex-wrap:wrap; font-size:12.5px; color: var(--ink-soft); }
+  .legend span{ display:inline-flex; align-items:center; gap:6px; }
+  .legend i{ width:12px; height:12px; border-radius:50%; display:inline-block; }
+
+  .gear{
+    position:fixed; bottom:18px; right:18px; width:44px; height:44px; border-radius:50%;
+    background: var(--navy); color:#fff; border:none; display:flex; align-items:center; justify-content:center;
+    cursor:pointer; box-shadow: var(--shadow); z-index:50; font-size:18px;
+  }
+  .gear:hover{ background: var(--navy-2); }
+
+  .overlay{
+    position:fixed; inset:0; background: rgba(10,14,22,0.5); display:none;
+    align-items:flex-start; justify-content:center; z-index:100; padding: 30px 16px; overflow-y:auto;
+  }
+  .overlay.show{ display:flex; }
+  .panel{
+    background: var(--card-bg); border-radius: var(--radius-m); max-width: 640px; width:100%;
+    padding: 26px 26px 30px; box-shadow: var(--shadow); border:1px solid var(--line);
+  }
+  .panel h3{ font-family:'Fraunces', serif; margin:0 0 4px; font-size:19px; }
+  .panel .desc{ color: var(--ink-soft); font-size:13px; margin-bottom:18px; }
+  .panel-close{ float:right; background:none; border:none; font-size:20px; cursor:pointer; color: var(--ink-soft); line-height:1; }
+  .field-row{ display:flex; gap:10px; margin-bottom:10px; }
+  .field-row input{
+    flex:1; border:1px solid var(--line); border-radius: var(--radius-s); padding:9px 11px;
+    font-size:14px; font-family:'Inter',sans-serif; background: var(--paper); color: var(--ink);
+  }
+  .field-row input.w-table{ max-width:110px; flex:none; }
+  textarea{
+    width:100%; min-height:110px; resize:vertical; font-family: 'Inter',sans-serif; font-size:13.5px;
+    border:1px solid var(--line); border-radius: var(--radius-s); padding:9px 11px; background: var(--paper); color: var(--ink);
+  }
+  .btn{ border:none; border-radius: var(--radius-s); padding:10px 16px; font-size:14px; font-weight:600; cursor:pointer; font-family:'Inter',sans-serif; }
+  .btn-primary{ background: var(--navy); color:#fff; }
+  .btn-primary:hover{ background: var(--navy-2); }
+  .btn-ghost{ background: var(--paper-2); color: var(--ink); }
+  .btn-ghost:hover{ background: var(--line); }
+  .btn-danger{ background: var(--burgundy); color:#fff; }
+  .tabs{ display:flex; gap:6px; margin-bottom:18px; border-bottom:1px solid var(--line); flex-wrap:wrap; row-gap:8px; }
+  .tab{ padding:8px 4px; cursor:pointer; font-size:13.5px; color: var(--ink-soft); border-bottom:2px solid transparent; margin-right:14px; }
+  .tab.active{ color: var(--ink); border-color: var(--gold); font-weight:600; }
+  .tab-content{ display:none; }
+  .tab-content.active{ display:block; }
+  .guest-list{ max-height:300px; overflow-y:auto; border:1px solid var(--line); border-radius: var(--radius-s); }
+  .guest-row{ display:flex; justify-content:space-between; align-items:center; padding:8px 12px; border-bottom:1px solid var(--line); font-size:13.5px; gap:8px; }
+  .guest-row:last-child{ border-bottom:none; }
+  .guest-row .gr-name{ flex:1; }
+  .guest-row .gr-arrived{ color: var(--green); font-size:12px; font-weight:600; white-space:nowrap; }
+  .guest-row button{ background:none; border:none; color: var(--burgundy); cursor:pointer; font-size:13px; white-space:nowrap; }
+  .settings-grid{ display:flex; gap:12px; margin-bottom:14px; flex-wrap:wrap; }
+  .settings-grid label{ font-size:12.5px; color: var(--ink-soft); display:block; margin-bottom:4px; }
+  .msg{ font-size:12.5px; margin-top:8px; min-height:16px; }
+  .msg.ok{ color: #4a7a3d; }
+  .msg.err{ color: var(--burgundy); }
+  .empty-note{ padding:16px; text-align:center; color: var(--ink-soft); font-size:13px; }
+  footer{ text-align:center; color: var(--ink-soft); font-size:12px; padding: 0 20px 34px; }
+
+  .app-toast{
+    position: fixed; left:50%; top: calc(env(safe-area-inset-top, 0px) + 18px);
+    transform: translateX(-50%) translateY(-20px);
+    background: var(--green); color:#fff; font-weight:700; font-size:14px;
+    padding: 12px 22px; border-radius: 999px; box-shadow: var(--shadow);
+    opacity:0; pointer-events:none; transition: opacity .25s ease, transform .25s ease;
+    z-index: 9999; max-width: calc(100vw - 32px); text-align:center;
+  }
+  .app-toast.show{ opacity:1; transform: translateX(-50%) translateY(0); }
+
+  .table-modal-panel{ max-width: 420px; }
+  .tg-list{ display:flex; flex-direction:column; gap:8px; margin-top:14px; }
+  .tg-item{
+    display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius: var(--radius-s);
+    font-size:14px; font-weight:600;
+  }
+  .tg-item.arrived{ background: var(--green-bg); color: var(--green); }
+  .tg-item.pending{ background: rgba(125,38,52,0.08); color: var(--burgundy); }
+  .tg-dot{ width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+  .tg-item.arrived .tg-dot{ background: var(--green); }
+  .tg-item.pending .tg-dot{ background: var(--burgundy); }
+  .tg-summary{ font-size:12.5px; color: var(--ink-soft); margin-top:2px; }
+
+  @media (max-width: 760px){
+    .top{ padding: 26px 16px 40px; }
+    .search-wrap{ padding: 0 14px; }
+    .map-section{ padding: 0 14px 44px; }
+    .hall{ padding: 22px 12px 26px; }
+    .panel{ padding: 20px 18px 24px; max-height: calc(100vh - 40px); overflow-y:auto; }
+    .overlay{ padding: 14px 10px; }
+    .tab{ margin-right:10px; font-size:13px; }
+    .field-row{ flex-wrap:wrap; }
+    .field-row input.w-table{ max-width:100%; flex:1; }
+    .btn{ padding: 11px 16px; }
+    .gear{ width:50px; height:50px; font-size:20px; bottom:16px; right:16px; }
+    .arrive-row{ flex-direction:column; align-items:stretch; }
+    .btn-arrive{ width:100%; }
+  }
+  @media (max-width:480px){
+    .table-el{ width:38px; height:38px; font-size:12px; }
+    .row{ gap:6px; }
+    .rows{ gap:12px; }
+    .result-top{ flex-direction:column; align-items:flex-start; gap:12px; }
+    .result-table{ align-self:stretch; }
+    .top h1{ font-size:26px; }
+    .search-box input{ font-size:16px; padding:11px 8px; }
+    .legend{ gap:10px; font-size:11.5px; }
+  }
+  @media (pointer: coarse){
+    .tab{ padding:10px 4px; }
+    .guest-row button{ padding:6px 8px; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="top">
+    <video class="top-video" autoplay muted loop playsinline poster="">
+      <source src="https://socgov.az/site/assets26/videos/hero.mp4" type="video/mp4">
+    </video>
+    <div class="top-overlay"></div>
+    <div class="top-inner">
+      <p class="eyebrow">XANKƏNDİ KONQRES MƏRKƏZİ</p>
+      <h1>Qonaq Yerləşdirmə Sistemi</h1>
+      <p class="sub">Adı yazın — masa nömrəsi və zaldakı yeri dərhal görünsün</p>
+      <div class="sync-pill"><span class="sync-dot wait" id="syncDot"></span><span id="syncText">Qoşulur...</span></div>
+    </div>
+  </div>
+
+  <div class="search-wrap">
+    <div class="search-anchor">
+    <div class="search-box">
+      <span class="search-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      </span>
+      <input id="searchInput" type="text" placeholder="Qonağın adını yazın..." autocomplete="off">
+    </div>
+    <div class="suggestions" id="suggestions"></div>
+    </div>
+
+    <div class="result-slot empty" id="resultSlot">
+    <div class="result-card" id="resultCard">
+      <div class="result-top">
+        <div>
+          <div class="result-name" id="resultName"></div>
+          <div class="result-loc" id="resultLoc"></div>
+        </div>
+        <div class="result-table">
+          <div class="num" id="resultTableNum"></div>
+          <div class="lbl">MASA</div>
+        </div>
+      </div>
+      <div class="arrive-row" id="arriveRow"></div>
+    </div>
+
+    <div class="not-found" id="notFound">Bu adda qonaq tapılmadı. Yoxlayın və ya inzibatçı panelindən əlavə edin.</div>
+    </div><!-- /resultSlot -->
+  </div>
+
+  <div class="map-section">
+    <div class="map-header">
+      <h2>Zal Sxemi</h2>
+      <span class="hint" id="mapHint">Axtarış edin, ya da masaya toxunub siyahını görün</span>
+    </div>
+    <div class="hall">
+      <div class="stage">SƏHNƏ</div>
+      <div class="rows" id="rowsContainer"></div>
+      <div class="legend">
+        <span><i style="background:var(--paper-2); border:2px solid var(--line);"></i> Boş masa</span>
+        <span><i style="background:conic-gradient(var(--green-line) 50%, var(--paper-2) 0); border:2px solid var(--green-line);"></i> Masada bəzi qonaqlar gəlib</span>
+        <span><i style="background:linear-gradient(145deg,#3dbb82,#0e6b44); border:2px solid #d9b876;"></i> Masa tam doludur</span>
+        <span><i style="background:var(--gold);"></i> Axtarılan qonağın masası</span>
+      </div>
+    </div>
+  </div>
+
+  <footer>Bütün cihazlarda canlı sinxronizasiya &middot; İnzibatçı panelindən idarə edin</footer>
+
+  <button class="gear" id="gearBtn" title="İnzibatçı paneli">⚙</button>
+
+  <div class="overlay" id="overlay">
+    <div class="panel">
+      <button class="panel-close" id="closePanel">&times;</button>
+      <h3>İnzibatçı Paneli</h3>
+      <p class="desc" id="panelDesc">Bütün dəyişikliklər dərhal bütün cihazlara ötürülür — əlavə düyməyə ehtiyac yoxdur.</p>
+
+      <div id="loginGate">
+        <div class="field-row">
+          <input type="email" id="loginEmail" placeholder="Email">
+        </div>
+        <div class="field-row">
+          <input type="password" id="loginPassword" placeholder="Parol">
+        </div>
+        <button class="btn btn-primary" id="loginBtn">Daxil ol</button>
+        <div class="msg" id="loginMsg"></div>
+      </div>
+
+      <div id="adminContent" style="display:none;">
+      <div style="text-align:right; margin:-10px 0 10px;">
+        <button class="btn-undo" id="logoutBtn">çıxış et</button>
+      </div>
+      <div class="tabs">
+        <div class="tab active" data-tab="add">Tək əlavə et</div>
+        <div class="tab" data-tab="bulk">Toplu əlavə et</div>
+        <div class="tab" data-tab="list">Siyahı (<span id="guestCount">0</span>)</div>
+        <div class="tab" data-tab="settings">Tənzimləmə</div>
+      </div>
+
+      <div class="tab-content active" data-tab-content="add">
+        <div class="field-row">
+          <input type="text" id="addName" placeholder="Ad Soyad">
+          <input type="text" id="addTable" class="w-table" placeholder="Masa №">
+        </div>
+        <button class="btn btn-primary" id="addGuestBtn">Əlavə et</button>
+        <div class="msg" id="addMsg"></div>
+      </div>
+
+      <div class="tab-content" data-tab-content="bulk">
+        <p class="desc" style="margin-top:-8px;">Hər sətirdə: <strong>Ad Soyad; Masa nömrəsi</strong> — məsələn:<br>Həsən Əliyev; 12<br>Aynur Məmmədova; 7</p>
+        <textarea id="bulkText" placeholder="Ad Soyad; Masa nömrəsi"></textarea>
+        <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn btn-primary" id="bulkAddBtn">Siyahını əlavə et</button>
+          <button class="btn btn-ghost" id="bulkReplaceBtn">Mövcud siyahını əvəz et</button>
+        </div>
+        <div class="msg" id="bulkMsg"></div>
+      </div>
+
+      <div class="tab-content" data-tab-content="list">
+        <div class="guest-list" id="guestListEl"></div>
+        <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn btn-ghost" id="exportBtn">JSON kimi yüklə</button>
+          <button class="btn btn-danger" id="clearBtn">Hamısını sil</button>
+        </div>
+      </div>
+
+      <div class="tab-content" data-tab-content="settings">
+        <div>
+          <label>Hər sıradakı masa sayı (vergüllə, birinci sıradan başlayaraq)</label>
+          <input type="text" id="rowCountsInput" placeholder="6,6,7,6,7" inputmode="numeric" style="width:100%;">
+        </div>
+        <div style="margin-top:12px;">
+          <label>Hər sıradakı masada oturacaq sayı (vergüllə)</label>
+          <input type="text" id="rowSeatsInput" placeholder="8,8,10,10,10" inputmode="numeric" style="width:100%;">
+          <p class="desc" style="margin-top:6px;">Masadakı gələn qonaq sayı bu rəqəmə çatanda masa premium yaşıl olur. Siyahı sıralardan qısadırsa, sonuncu rəqəm qalan sıralara tətbiq olunur.</p>
+        </div>
+        <button class="btn btn-primary" id="applySettingsBtn">Tətbiq et</button>
+        <div class="msg" id="settingsMsg"></div>
+        <p class="desc" style="margin-top:16px;">Məsələn <b>6,6,7,6,7</b> yazsan: 1-ci sırada 6, 2-ci sırada 6, 3-cü sırada 7, 4-cü sırada 6, 5-ci sırada 7 masa olar (cəmi 32). Yeni sıra əlavə etmək üçün sonuna vergül və rəqəm yaz.</p>
+      </div>
+      </div><!-- /adminContent -->
+    </div>
+  </div>
+
+  <div class="overlay" id="tableOverlay">
+    <div class="panel table-modal-panel">
+      <button class="panel-close" id="closeTableModal">&times;</button>
+      <h3 id="tableModalTitle">Masa</h3>
+      <div class="tg-summary" id="tableModalSummary"></div>
+      <div class="tg-list" id="tableModalList"></div>
+    </div>
+  </div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import {
+  getFirestore, collection, doc, addDoc, setDoc, updateDoc, deleteDoc,
+  onSnapshot, writeBatch, getDocs, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import {
+  getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBvCQP4V2ergiUXjLY0ZXOX40U4kB5-ITQ",
+  authDomain: "socgov2026.firebaseapp.com",
+  projectId: "socgov2026",
+  storageBucket: "socgov2026.firebasestorage.app",
+  messagingSenderId: "735897981439",
+  appId: "1:735897981439:web:ed371627544b2b71d697ca"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+const guestsCol = collection(db, 'guests');
+const layoutRef = doc(db, 'settings', 'layout');
+
+let guests = [];               // [{id, name, table, arrived}]
+const DEFAULT_ROW_COUNTS = [6, 6, 7, 6, 7];
+const DEFAULT_ROW_SEATS = [8, 8, 10, 10, 10];
+let layout = { rowCounts: DEFAULT_ROW_COUNTS, rowSeats: DEFAULT_ROW_SEATS };
+let currentGuestId = null;     // guest currently shown in the result card
+
+const az = s => (s||'').toLocaleLowerCase('az').trim();
+const escapeHtml = (str) => { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; };
+
+function setSync(state, text){
+  const dot = document.getElementById('syncDot');
+  const label = document.getElementById('syncText');
+  dot.className = 'sync-dot' + (state === 'bad' ? ' bad' : state === 'wait' ? ' wait' : '');
+  label.textContent = text;
+}
+
+function rowCounts(){
+  const rc = layout && Array.isArray(layout.rowCounts) ? layout.rowCounts.filter(n => Number.isInteger(n) && n > 0) : [];
+  return rc.length ? rc : DEFAULT_ROW_COUNTS;
+}
+function rowSeats(){
+  const rs = layout && Array.isArray(layout.rowSeats) ? layout.rowSeats.filter(n => Number.isInteger(n) && n > 0) : [];
+  return rs.length ? rs : DEFAULT_ROW_SEATS;
+}
+function rowIndexOfTable(tableNumber){
+  const rc = rowCounts();
+  let left = tableNumber, row = 0;
+  while(row < rc.length - 1 && left > rc[row]){ left -= rc[row]; row++; }
+  return row;
+}
+function tableCapacity(tableNumber){
+  const rs = rowSeats();
+  const r = rowIndexOfTable(tableNumber);
+  return rs[Math.min(r, rs.length - 1)];
+}
+function updateTableStates(){
+  const arrivedBy = {};
+  guests.forEach(g => { if(g.arrived) arrivedBy[g.table] = (arrivedBy[g.table] || 0) + 1; });
+  document.querySelectorAll('.table-el').forEach(el => {
+    const n = parseInt(el.dataset.table, 10);
+    const cap = tableCapacity(n);
+    const a = arrivedBy[n] || 0;
+    const full = a >= cap;
+    el.classList.toggle('full', full);
+    el.classList.toggle('partial', !full && a > 0);
+    if(!full && a > 0) el.style.setProperty('--p', Math.round((a / cap) * 100));
+    else el.style.removeProperty('--p');
+    el.title = `Masa ${n}: ${a} / ${cap}`;
+  });
+}
+function totalTables(){ return rowCounts().reduce((a, b) => a + b, 0); }
+
+function locationDescription(tableNumber){
+  const rc = rowCounts();
+  let left = tableNumber;
+  let row = 0;
+  while(row < rc.length - 1 && left > rc[row]){ left -= rc[row]; row++; }
+  const col = left;
+  const rows = rc.length;
+  const r = row + 1;
+  const zone = r <= Math.ceil(rows/3) ? 'səhnəyə yaxın' : (r >= rows - Math.ceil(rows/3) + 1 ? 'arxa hissə' : 'orta hissə');
+  return `${r}-ci sıra, soldan ${col}-ci masa — ${zone}`;
+}
+
+function renderHall(){
+  const container = document.getElementById('rowsContainer');
+  container.innerHTML = '';
+  let tableNum = 1;
+  const rc = rowCounts();
+  for(let r=0; r<rc.length; r++){
+    const rowEl = document.createElement('div');
+    rowEl.className = 'row';
+    for(let c=0; c<rc[r]; c++){
+      const t = document.createElement('div');
+      t.className = 'table-el';
+      t.dataset.table = tableNum;
+      t.textContent = tableNum;
+      t.addEventListener('click', ()=> openTableModal(t.dataset.table));
+      rowEl.appendChild(t);
+      tableNum++;
+    }
+    container.appendChild(rowEl);
+  }
+  updateTableStates();
+  // re-apply highlight if a guest is currently shown
+  const g = guests.find(x => x.id === currentGuestId);
+  if(g && g.table >= 1 && g.table <= totalTables()) highlightTable(g.table);
+}
+
+function openTableModal(tableNumber){
+  const num = parseInt(tableNumber, 10);
+  const list = guests.filter(g => g.table === num).sort((a,b)=> az(a.name).localeCompare(az(b.name)));
+  document.getElementById('tableModalTitle').textContent = `Masa ${num}`;
+  const listEl = document.getElementById('tableModalList');
+  const summaryEl = document.getElementById('tableModalSummary');
+  if(list.length === 0){
+    summaryEl.textContent = '';
+    listEl.innerHTML = '<div class="empty-note">Bu masaya hələ qonaq təyin edilməyib</div>';
+  }else{
+    const arrivedCount = list.filter(g=>g.arrived).length;
+    summaryEl.textContent = `${arrivedCount} / ${list.length} qonaq gəlib (masa tutumu: ${tableCapacity(num)})`;
+    listEl.innerHTML = list.map(g =>
+      `<div class="tg-item ${g.arrived ? 'arrived' : 'pending'}"><span class="tg-dot"></span>${escapeHtml(g.name)}</div>`
+    ).join('');
+  }
+  document.getElementById('tableOverlay').classList.add('show');
+}
+document.getElementById('closeTableModal').addEventListener('click', ()=> document.getElementById('tableOverlay').classList.remove('show'));
+document.getElementById('tableOverlay').addEventListener('click', (e)=>{ if(e.target.id === 'tableOverlay') e.currentTarget.classList.remove('show'); });
+
+function clearHighlight(){
+  document.querySelectorAll('.table-el.highlight').forEach(el=>el.classList.remove('highlight'));
+}
+function highlightTable(tableNumber){
+  clearHighlight();
+  const el = document.querySelector('.table-el[data-table="'+tableNumber+'"]');
+  if(el){
+    el.classList.add('highlight');
+    // No auto-scroll: the page should stay put while the user is typing.
+  }
+}
+
+function renderArriveRow(guest){
+  const el = document.getElementById('arriveRow');
+  if(guest.arrived){
+    el.innerHTML = `<span class="arrived-badge">✓ Artıq qeydə alınıb (gəlib)</span><button class="btn-undo" id="undoArriveBtn">geri al</button>`;
+    document.getElementById('undoArriveBtn').addEventListener('click', ()=> setArrived(guest.id, false));
+  }else{
+    el.innerHTML = `<button class="btn-arrive" id="markArriveBtn">✓ Gəldi — qeyd et</button>`;
+    document.getElementById('markArriveBtn').addEventListener('click', ()=> setArrived(guest.id, true));
+  }
+}
+
+async function setArrived(id, arrived){
+  try{
+    await updateDoc(doc(db, 'guests', id), { arrived, arrivedAt: arrived ? serverTimestamp() : null });
+  }catch(e){ console.error('Arrival update failed', e); }
+}
+
+function showResult(guest){
+  currentGuestId = guest.id;
+  document.getElementById('resultSlot').classList.remove('empty');
+  document.getElementById('notFound').classList.remove('show');
+  document.getElementById('resultCard').classList.add('show');
+  document.getElementById('resultName').textContent = guest.name;
+  document.getElementById('resultTableNum').textContent = guest.table;
+  const inRange = guest.table >= 1 && guest.table <= totalTables();
+  document.getElementById('resultLoc').textContent = inRange ? locationDescription(guest.table) : 'Bu masa cari zal sxemində göstərilmir';
+  if(inRange) highlightTable(guest.table); else clearHighlight();
+  renderArriveRow(guest);
+}
+
+function showNotFound(){
+  currentGuestId = null;
+  document.getElementById('resultSlot').classList.remove('empty');
+  document.getElementById('resultCard').classList.remove('show');
+  document.getElementById('notFound').classList.add('show');
+  clearHighlight();
+}
+function hideResults(){
+  currentGuestId = null;
+  document.getElementById('resultSlot').classList.add('empty');
+  document.getElementById('resultCard').classList.remove('show');
+  document.getElementById('notFound').classList.remove('show');
+  clearHighlight();
+}
+
+// ---- Search ----
+const searchInput = document.getElementById('searchInput');
+const suggestionsEl = document.getElementById('suggestions');
+
+function runSearch(q){
+  const query = az(q);
+  if(!query){ suggestionsEl.classList.remove('show'); hideResults(); return; }
+  const matches = guests.filter(g => az(g.name).includes(query));
+  if(matches.length === 0){ suggestionsEl.classList.remove('show'); showNotFound(); return; }
+  if(matches.length === 1){ suggestionsEl.classList.remove('show'); showResult(matches[0]); return; }
+  document.getElementById('resultCard').classList.remove('show');
+  document.getElementById('notFound').classList.remove('show');
+  document.getElementById('resultSlot').classList.add('empty');
+  suggestionsEl.innerHTML = matches.slice(0,8).map(g =>
+    `<div class="sugg-item" data-id="${g.id}"><span class="sugg-name">${escapeHtml(g.name)}${g.arrived ? ' ✓' : ''}</span><span class="sugg-table">Masa ${g.table}</span></div>`
+  ).join('');
+  suggestionsEl.classList.add('show');
+}
+
+searchInput.addEventListener('input', (e)=> runSearch(e.target.value));
+suggestionsEl.addEventListener('click', (e)=>{
+  const item = e.target.closest('.sugg-item');
+  if(!item) return;
+  const guest = guests.find(g=>g.id === item.dataset.id);
+  if(guest){
+    searchInput.value = guest.name;
+    suggestionsEl.classList.remove('show');
+    showResult(guest);
+  }
+});
+document.addEventListener('click', (e)=>{
+  if(!e.target.closest('.search-wrap')) suggestionsEl.classList.remove('show');
+});
+
+// ---- Admin panel ----
+const overlay = document.getElementById('overlay');
+document.getElementById('gearBtn').addEventListener('click', ()=>{ overlay.classList.add('show'); refreshAdmin(); });
+document.getElementById('closePanel').addEventListener('click', ()=> overlay.classList.remove('show'));
+overlay.addEventListener('click', (e)=>{ if(e.target === overlay) overlay.classList.remove('show'); });
+
+const loginGate = document.getElementById('loginGate');
+const adminContent = document.getElementById('adminContent');
+const panelDesc = document.getElementById('panelDesc');
+
+onAuthStateChanged(auth, (user)=>{
+  if(user){
+    loginGate.style.display = 'none';
+    adminContent.style.display = 'block';
+    panelDesc.textContent = 'Bütün dəyişikliklər dərhal bütün cihazlara ötürülür.';
+  }else{
+    loginGate.style.display = 'block';
+    adminContent.style.display = 'none';
+    panelDesc.textContent = 'Davam etmək üçün daxil olun.';
+  }
+});
+
+async function doLogin(){
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const msg = document.getElementById('loginMsg');
+  if(!email || !password){ msg.textContent = 'Email və parolu daxil edin.'; msg.className = 'msg err'; return; }
+  try{
+    await signInWithEmailAndPassword(auth, email, password);
+    msg.textContent = '';
+    document.getElementById('loginPassword').value = '';
+    showToast('✓ Daxil oldunuz');
+  }catch(e){
+    msg.textContent = 'Giriş uğursuz oldu — email və ya parol yanlışdır.';
+    msg.className = 'msg err';
+  }
+}
+document.getElementById('loginBtn').addEventListener('click', doLogin);
+['loginEmail','loginPassword'].forEach(id=>{
+  document.getElementById(id).addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter'){ e.preventDefault(); doLogin(); }
+  });
+});
+document.getElementById('logoutBtn').addEventListener('click', ()=> signOut(auth));
+
+function showToast(text){
+  let el = document.getElementById('appToast');
+  if(!el){
+    el = document.createElement('div');
+    el.id = 'appToast';
+    el.className = 'app-toast';
+    document.body.appendChild(el);
+  }
+  el.textContent = text;
+  el.classList.add('show');
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(()=> el.classList.remove('show'), 2500);
+}
+
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    document.querySelector('.tab-content[data-tab-content="'+tab.dataset.tab+'"]').classList.add('active');
+  });
+});
+
+function refreshAdmin(){
+  document.getElementById('rowCountsInput').value = rowCounts().join(',');
+  document.getElementById('rowSeatsInput').value = rowSeats().join(',');
+  document.getElementById('guestCount').textContent = guests.length;
+  const listEl = document.getElementById('guestListEl');
+  if(guests.length === 0){
+    listEl.innerHTML = '<div class="empty-note">Hələ qonaq əlavə edilməyib</div>';
+  }else{
+    listEl.innerHTML = guests.map(g=>
+      `<div class="guest-row">
+        <span class="gr-name">${escapeHtml(g.name)} — Masa ${g.table}</span>
+        ${g.arrived ? '<span class="gr-arrived">✓ Gəlib</span>' : ''}
+        <button data-id="${g.id}">Sil</button>
+      </div>`
+    ).join('');
+    listEl.querySelectorAll('button[data-id]').forEach(btn=>{
+      btn.addEventListener('click', async ()=>{
+        try{ await deleteDoc(doc(db, 'guests', btn.dataset.id)); }
+        catch(e){ console.error('Delete failed', e); }
+      });
+    });
+  }
+}
+
+document.getElementById('addGuestBtn').addEventListener('click', async ()=>{
+  const name = document.getElementById('addName').value.trim();
+  const table = parseInt(document.getElementById('addTable').value, 10);
+  const msg = document.getElementById('addMsg');
+  if(!name || !table){ msg.textContent = 'Ad və masa nömrəsini daxil edin.'; msg.className = 'msg err'; return; }
+  try{
+    await addDoc(guestsCol, { name, table, arrived: false, arrivedAt: null, createdAt: serverTimestamp() });
+    document.getElementById('addName').value = '';
+    document.getElementById('addTable').value = '';
+    msg.textContent = `${name} əlavə olundu — Masa ${table}`;
+    msg.className = 'msg ok';
+  }catch(e){
+    console.error(e);
+    msg.textContent = 'Xəta baş verdi, yenidən cəhd edin.';
+    msg.className = 'msg err';
+  }
+});
+
+function parseBulk(text){
+  return text.split('\n').map(line=>line.trim()).filter(Boolean).map(line=>{
+    const parts = line.split(/;|,(?=[^,]*$)/).map(p=>p.trim());
+    let name, table;
+    if(parts.length >= 2){ name = parts[0]; table = parseInt(parts[1], 10); }
+    return (name && table) ? { name, table } : null;
+  }).filter(Boolean);
+}
+
+document.getElementById('bulkAddBtn').addEventListener('click', async ()=>{
+  const parsed = parseBulk(document.getElementById('bulkText').value);
+  const msg = document.getElementById('bulkMsg');
+  if(parsed.length === 0){ msg.textContent = 'Düzgün sətir tapılmadı. Format: Ad Soyad; Masa nömrəsi'; msg.className = 'msg err'; return; }
+  try{
+    const batch = writeBatch(db);
+    parsed.forEach(p => { const ref = doc(guestsCol); batch.set(ref, { name: p.name, table: p.table, arrived: false, arrivedAt: null, createdAt: serverTimestamp() }); });
+    await batch.commit();
+    msg.textContent = `${parsed.length} qonaq əlavə olundu.`;
+    msg.className = 'msg ok';
+    document.getElementById('bulkText').value = '';
+  }catch(e){
+    console.error(e);
+    msg.textContent = 'Xəta baş verdi, yenidən cəhd edin.';
+    msg.className = 'msg err';
+  }
+});
+
+document.getElementById('bulkReplaceBtn').addEventListener('click', async ()=>{
+  const parsed = parseBulk(document.getElementById('bulkText').value);
+  const msg = document.getElementById('bulkMsg');
+  if(parsed.length === 0){ msg.textContent = 'Düzgün sətir tapılmadı. Format: Ad Soyad; Masa nömrəsi'; msg.className = 'msg err'; return; }
+  try{
+    const snap = await getDocs(guestsCol);
+    const batch = writeBatch(db);
+    snap.forEach(d => batch.delete(d.ref));
+    parsed.forEach(p => { const ref = doc(guestsCol); batch.set(ref, { name: p.name, table: p.table, arrived: false, arrivedAt: null, createdAt: serverTimestamp() }); });
+    await batch.commit();
+    msg.textContent = `Siyahı əvəz olundu — ${parsed.length} qonaq.`;
+    msg.className = 'msg ok';
+    document.getElementById('bulkText').value = '';
+  }catch(e){
+    console.error(e);
+    msg.textContent = 'Xəta baş verdi, yenidən cəhd edin.';
+    msg.className = 'msg err';
+  }
+});
+
+document.getElementById('applySettingsBtn').addEventListener('click', async ()=>{
+  const msg = document.getElementById('settingsMsg');
+  const counts = document.getElementById('rowCountsInput').value.split(/[,;\s]+/).filter(Boolean).map(x => parseInt(x, 10));
+  if(counts.length === 0 || counts.length > 30 || counts.some(n => !Number.isInteger(n) || n < 1 || n > 20)){ msg.textContent = 'Düzgün yazın, məsələn: 6,6,7,6,7'; msg.className = 'msg err'; return; }
+  const seats = document.getElementById('rowSeatsInput').value.split(/[,;\s]+/).filter(Boolean).map(x => parseInt(x, 10));
+  if(seats.length === 0 || seats.length > 30 || seats.some(n => !Number.isInteger(n) || n < 1 || n > 50)){ msg.textContent = 'Oturacaq sayını düzgün yazın, məsələn: 8,8,10,10,10'; msg.className = 'msg err'; return; }
+  try{
+    await setDoc(layoutRef, { rowCounts: counts, rowSeats: seats });
+    msg.textContent = `Tətbiq olundu — ${counts.length} sıra, ümumi ${counts.reduce((a, b) => a + b, 0)} masa.`;
+    msg.className = 'msg ok';
+  }catch(e){
+    console.error(e);
+    msg.textContent = 'Xəta baş verdi, yenidən cəhd edin.';
+    msg.className = 'msg err';
+  }
+});
+
+document.getElementById('exportBtn').addEventListener('click', ()=>{
+  try{
+    const blob = new Blob([JSON.stringify({ layout, guests }, null, 2)], { type:'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'qonaq-siyahisi.json';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }catch(e){ console.error(e); }
+});
+
+document.getElementById('clearBtn').addEventListener('click', async ()=>{
+  if(guests.length === 0) return;
+  if(!confirm('Bütün qonaq siyahısı silinsin?')) return;
+  try{
+    const snap = await getDocs(guestsCol);
+    const batch = writeBatch(db);
+    snap.forEach(d => batch.delete(d.ref));
+    await batch.commit();
+  }catch(e){ console.error('Clear failed', e); }
+});
+
+// ---- Live listeners ----
+onSnapshot(guestsCol, (snap) => {
+  guests = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  updateTableStates();
+  setSync('ok', 'Canlı sinxronizasiya aktivdir');
+  refreshAdmin();
+  if(searchInput.value.trim()) runSearch(searchInput.value);
+  // keep the highlighted table's guest data fresh if the panel is open
+  if(currentGuestId){
+    const g = guests.find(x => x.id === currentGuestId);
+    if(g) renderArriveRow(g);
+  }
+}, (err) => {
+  console.error('Guests listener error', err);
+  setSync('bad', 'Bağlantı yoxdur — internet bağlantınızı yoxlayın');
+});
+
+onSnapshot(layoutRef, (snap) => {
+  if(snap.exists()){ layout = snap.data(); }
+  renderHall();
+}, (err) => {
+  console.error('Layout listener error', err);
+});
+
+// Seed default layout once, if it doesn't exist yet.
+(async () => {
+  try{
+    const snap = await getDocs(collection(db, 'settings'));
+    const hasLayout = snap.docs.some(d => d.id === 'layout');
+    if(!hasLayout){ await setDoc(layoutRef, { rowCounts: DEFAULT_ROW_COUNTS, rowSeats: DEFAULT_ROW_SEATS }); }
+  }catch(e){ console.error('Layout seed check failed', e); }
+})();
+
+renderHall();
+
+// ---- Auto-update: if a newer version is deployed, reload this tab automatically ----
+const CURRENT_APP_VERSION = document.querySelector('meta[name="app-version"]')?.content || '';
+async function checkForUpdate(){
+  try{
+    const res = await fetch(window.location.href, { cache: 'no-store' });
+    const html = await res.text();
+    const match = html.match(/<meta name="app-version" content="([^"]*)"/);
+    const latest = match ? match[1] : null;
+    if(latest && CURRENT_APP_VERSION && latest !== CURRENT_APP_VERSION){
+      window.location.reload();
+    }
+  }catch(e){ /* offline or blocked — ignore, try again next interval */ }
+}
+setInterval(checkForUpdate, 60000); // check every 60 seconds
+</script>
+</body>
+</html>
