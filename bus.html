@@ -6,7 +6,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<meta name="app-version" content="bus-2026-10-18-6">
+<meta name="app-version" content="bus-2026-10-21-1">
 <title>SOCGOV 2026 — Avtobus Davamiyyəti</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -98,6 +98,9 @@
     cursor:pointer; display:flex; flex-direction:column; align-items:center; line-height:1.2; white-space:nowrap;
   }
   .chip span{font-size:11px; font-weight:500; color:var(--ink-soft);}
+  .chip span.trip{font-size:14px; font-weight:800; color:var(--gold); margin-top:2px;}
+  .chip.active span.trip{color:var(--gold-bright);}
+  .sum-trip{font-size:16px; font-weight:800; color:var(--gold); margin-top:3px;}
   .chip.active{background:var(--navy); color:#fff; border-color:var(--navy);}
   .chip.active span{color:rgba(255,255,255,0.75);}
   .chips-note{font-size:13px; color:var(--ink-soft); padding:4px 4px 8px;}
@@ -289,6 +292,11 @@
         <div class="field-row">
           <input type="text" id="newBusPlate" placeholder="Avtobus nömrəsi (məs. 90 JJ 999)" autocapitalize="characters">
         </div>
+        <p class="hint">Hərəkət tarixi və saatı (eyni nömrəli avtobus başqa gün və ya saatda yenidən əlavə oluna bilər):</p>
+        <div class="field-row">
+          <input type="date" id="newBusDate">
+          <input type="time" id="newBusTime">
+        </div>
         <p class="hint">Sərnişin adları (hər sətirdə bir nəfər, istəyə görə, sonra da əlavə etmək olar):</p>
         <textarea id="newBusNames" placeholder="Həsən Əliyev&#10;Aynur Məmmədova&#10;Rəşad Hüseynov"></textarea>
         <div class="btn-row"><button class="btn btn-primary" id="addBusBtn">Avtobus əlavə et</button></div>
@@ -343,6 +351,19 @@ const az = (s) => (s || '').toLocaleLowerCase('az').trim();
 const normPlate = (s) => (s || '').toUpperCase().replace(/\s+/g, '');
 const cleanPlate = (s) => (s || '').toUpperCase().replace(/\s+/g, ' ').trim();
 const MAX_PEOPLE = 300;
+const MONTHS = ['yan','fev','mar','apr','may','iyn','iyl','avq','sen','okt','noy','dek'];
+function tripLabel(b){
+  const parts = [];
+  if(b.date){
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(b.date);
+    parts.push(m ? `${parseInt(m[3], 10)} ${MONTHS[parseInt(m[2], 10) - 1] || ''}` : b.date);
+  }
+  if(b.time) parts.push(b.time);
+  return parts.join(' · ');
+}
+const tripKey = (b) => (b.date || '9999-99-99') + ' ' + (b.time || '99:99');
+const sameTrip = (a, b) => normPlate(a.name) === normPlate(b.name) && (a.date || '') === (b.date || '') && (a.time || '') === (b.time || '');
+const busFull = (b) => b.name + (tripLabel(b) ? ' (' + tripLabel(b) + ')' : '');
 
 const LS_BUS = 'socgov_bus_selected';
 const LS_SORT = 'socgov_bus_sort';
@@ -400,7 +421,7 @@ function visibleBuses(){
 function renderChips(){
   const list = visibleBuses();
   $('busChips').innerHTML = list.map(b =>
-    `<button class="chip${b.id === selectedBusId ? ' active' : ''}" data-id="${b.id}">${escapeHtml(b.name)}<span>${b.count || 0} nəfər</span></button>`
+    `<button class="chip${b.id === selectedBusId ? ' active' : ''}" data-id="${b.id}">${escapeHtml(b.name)}<span class="trip">${escapeHtml(tripLabel(b))}</span><span>${b.count || 0} nəfər</span></button>`
   ).join('');
 }
 
@@ -431,7 +452,7 @@ function renderBusView(){
 
   const total = people.length;
   const seated = people.filter(p => p.seated).length;
-  $('busTitle').textContent = bus.name;
+  $('busTitle').innerHTML = escapeHtml(bus.name) + (tripLabel(bus) ? `<div class="sum-trip">🕒 ${escapeHtml(tripLabel(bus))}</div>` : '');
   $('sumCount').innerHTML = `<b>${seated}</b> / ${total} avtobusda`;
   $('barFill').style.width = total ? ((seated / total) * 100) + '%' : '0%';
   $('sumSub').textContent = total ? `Hələ gəlməyən: ${total - seated}` : '';
@@ -468,7 +489,7 @@ async function refreshAdmin(){
   box.innerHTML = buses.map((b, i) => {
     const list = snaps[i] ? snaps[i].docs.map(d => ({ id: d.id, ...d.data() })).filter(p => p.name).sort((x, y) => (x.no || 0) - (y.no || 0)) : [];
     adminCache[b.id] = list;
-    return `<div class="abus"><div class="abus-h">${escapeHtml(b.name)}<span>${list.length} nəfər</span></div>` +
+    return `<div class="abus"><div class="abus-h">${escapeHtml(busFull(b))}<span>${list.length} nəfər</span></div>` +
       (list.length ? `<ol>${list.map(p => `<li>${escapeHtml(p.name)}</li>`).join('')}</ol>` : '<p class="hint">Ad yoxdur.</p>') +
       `<div class="btn-row"><button class="btn btn-primary" data-editbus="${b.id}">✎ Redaktə et</button>` +
       `<button class="btn btn-danger" data-delbus="${b.id}">Avtobusu sil</button></div></div>`;
@@ -499,7 +520,7 @@ function selectBus(id){
 }
 
 onSnapshot(collection(db, 'buses'), (snap) => {
-  buses = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (a.order || 0) - (b.order || 0));
+  buses = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => tripKey(a).localeCompare(tripKey(b)) || (a.order || 0) - (b.order || 0));
   busesLoaded = true;
   if(!buses.find(b => b.id === selectedBusId)){
     const saved = lsGet(LS_BUS);
@@ -561,7 +582,7 @@ $('resetBtn').addEventListener('click', async () => {
   if(!bus) return;
   const seatedList = people.filter(p => p.seated);
   if(seatedList.length === 0){ showToast('Hamı artıq qırmızıdır'); return; }
-  if(!confirm(`${bus.name} yenilənsin?\n${seatedList.length} nəfər yenidən "gəlməyib" (qırmızı) olacaq.`)) return;
+  if(!confirm(`${busFull(bus)} yenilənsin?\n${seatedList.length} nəfər yenidən "gəlməyib" (qırmızı) olacaq.`)) return;
   try{
     await commitOps(seatedList.map(p => (batch) => batch.update(personRef(bus.id, p.id), { seated: false, seatedAt: null })));
     showToast('✓ Avtobus yeniləndi');
@@ -651,20 +672,24 @@ function parseNames(text){
 $('addBusBtn').addEventListener('click', async () => {
   const plate = cleanPlate($('newBusPlate').value);
   const names = parseNames($('newBusNames').value);
+  const date = $('newBusDate').value;
+  const time = $('newBusTime').value;
   if(!plate){ setMsg('addBusMsg', 'Avtobus nömrəsini yazın.', 'err'); return; }
+  if(!date || !time){ setMsg('addBusMsg', 'Tarix və saatı seçin.', 'err'); return; }
   if(names.length > MAX_PEOPLE){ setMsg('addBusMsg', `Bir avtobusa ən çox ${MAX_PEOPLE} ad əlavə etmək olar.`, 'err'); return; }
-  if(buses.some(b => normPlate(b.name) === normPlate(plate))){ setMsg('addBusMsg', 'Bu nömrəli avtobus artıq var.', 'err'); return; }
+  if(buses.some(b => sameTrip(b, { name: plate, date, time }))){ setMsg('addBusMsg', 'Bu nömrə, tarix və saatda avtobus artıq var.', 'err'); return; }
   try{
     const newRef = doc(collection(db, 'buses'));
-    const ops = [(batch) => batch.set(newRef, { name: plate, count: names.length, order: Date.now(), createdAt: serverTimestamp() })];
+    const ops = [(batch) => batch.set(newRef, { name: plate, date, time, count: names.length, order: Date.now(), createdAt: serverTimestamp() })];
     names.forEach((name, i) => {
       const r = doc(collection(db, 'buses', newRef.id, 'seats'));
       ops.push((batch) => batch.set(r, { no: i + 1, name, seated: false, seatedAt: null }));
     });
     await commitOps(ops);
     $('newBusPlate').value = '';
+    // tarix və saat qalır: eyni günün növbəti avtobusunu tez əlavə etmək üçün
     $('newBusNames').value = '';
-    setMsg('addBusMsg', `${plate} əlavə olundu (${names.length} nəfər).`, 'ok');
+    setMsg('addBusMsg', `${plate} (${tripLabel({ date, time })}) əlavə olundu (${names.length} nəfər).`, 'ok');
     showToast('✓ Avtobus əlavə olundu');
     $('newBusPlate').focus();
     setTimeout(refreshAdmin, 400);
@@ -681,13 +706,16 @@ $('adminBusList').addEventListener('click', async (e) => {
     if(!bus) return;
     adminEditId = bus.id;
     const card = ed.closest('.abus');
-    card.innerHTML = `<div class="abus-h">Redaktə: ${escapeHtml(bus.name)}</div>` +
+    card.innerHTML = `<div class="abus-h">Redaktə: ${escapeHtml(busFull(bus))}</div>` +
       `<p class="hint">Avtobus nömrəsi:</p><div class="field-row"><input type="text" id="editPlate" autocapitalize="characters"></div>` +
+      `<p class="hint">Tarix və saat:</p><div class="field-row"><input type="date" id="editDate"><input type="time" id="editTime"></div>` +
       `<p class="hint">Adlar (hər sətirdə bir nəfər). Yeni ad əlavə et, sətri sil və ya düzəliş et. Dəyişməyən adların "avtobusda" vəziyyəti qorunur.</p>` +
       `<textarea id="editNames" style="min-height:240px"></textarea>` +
       `<div class="btn-row"><button class="btn btn-primary" id="editSave">Yadda saxla</button><button class="btn btn-ghost" id="editCancel">Ləğv et</button></div>` +
       `<div class="msg" id="editMsg"></div>`;
     $('editPlate').value = bus.name;
+    $('editDate').value = bus.date || '';
+    $('editTime').value = bus.time || '';
     $('editNames').value = (adminCache[bus.id] || []).map(p => p.name).join('\n');
     return;
   }
@@ -696,9 +724,12 @@ $('adminBusList').addEventListener('click', async (e) => {
     const bus = buses.find(b => b.id === adminEditId);
     if(!bus) return;
     const plate = cleanPlate($('editPlate').value);
+    const date = $('editDate').value;
+    const time = $('editTime').value;
     const names = parseNames($('editNames').value);
     if(!plate){ setMsg('editMsg', 'Nömrə boş ola bilməz.', 'err'); return; }
-    if(buses.some(b => b.id !== bus.id && normPlate(b.name) === normPlate(plate))){ setMsg('editMsg', 'Bu nömrəli avtobus artıq var.', 'err'); return; }
+    if(!date || !time){ setMsg('editMsg', 'Tarix və saatı seçin.', 'err'); return; }
+    if(buses.some(b => b.id !== bus.id && sameTrip(b, { name: plate, date, time }))){ setMsg('editMsg', 'Bu nömrə, tarix və saatda avtobus artıq var.', 'err'); return; }
     if(names.length > MAX_PEOPLE){ setMsg('editMsg', `Ən çox ${MAX_PEOPLE} ad ola bilər.`, 'err'); return; }
     try{
       const pool = (adminCache[bus.id] || []).slice();
@@ -714,7 +745,7 @@ $('adminBusList').addEventListener('click', async (e) => {
         }
       });
       pool.forEach(p => ops.push((batch) => batch.delete(personRef(bus.id, p.id))));
-      ops.push((batch) => batch.update(busRef(bus.id), { name: plate, count: names.length }));
+      ops.push((batch) => batch.update(busRef(bus.id), { name: plate, date, time, count: names.length }));
       await commitOps(ops);
       adminEditId = null;
       showToast('✓ Yadda saxlanıldı');
@@ -725,7 +756,7 @@ $('adminBusList').addEventListener('click', async (e) => {
   const btn = e.target.closest('[data-delbus]');
   if(!btn) return;
   const bus = buses.find(b => b.id === btn.dataset.delbus);
-  if(!bus || !confirm(`"${bus.name}" avtobusu tamamilə silinsin? Bütün adlar silinəcək.`)) return;
+  if(!bus || !confirm(`"${busFull(bus)}" avtobusu tamamilə silinsin? Bütün adlar silinəcək.`)) return;
   try{
     const snap = await getDocs(peopleCol(bus.id));
     const ops = snap.docs.map(d => (batch) => batch.delete(d.ref));
