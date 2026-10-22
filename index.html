@@ -6,7 +6,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<meta name="app-version" content="2026-10-22-1">
+<meta name="app-version" content="2026-10-23-8">
 <title>Xankəndi Konqres Mərkəzi — Qonaq Yerləşdirmə</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -23,6 +23,7 @@
     --line: rgba(22,35,61,0.12);
     --burgundy: #7d2634;
     --green: #3f7a3d;
+    --green-line: rgba(63,122,61,0.6);
     --green-bg: #eaf3e6;
     --card-bg: #ffffff;
     --shadow: 0 10px 30px rgba(22,35,61,0.10);
@@ -198,10 +199,10 @@
     font-family:'Fraunces', serif; letter-spacing: 0.04em; font-size: 13px; padding: 10px 0;
     border-radius: var(--radius-s); margin: 0 auto 30px; max-width: 320px;
   }
-  .rows{ display:flex; flex-direction:column; gap:22px; align-items:center; min-width: 340px; }
-  .row{ display:flex; gap:16px; justify-content:center; flex-wrap:nowrap; }
+  .rows{ display:flex; flex-direction:column; gap:22px; align-items:center; }
+  .row{ --tw:56px; display:flex; gap:16px; justify-content:center; flex-wrap:nowrap; }
   .table-el{
-    width:56px; height:56px; border-radius:50%; background: var(--paper-2); border: 2px solid var(--line);
+    width:var(--tw,56px); height:var(--tw,56px); border-radius:50%; background: var(--paper-2); border: 2px solid var(--line);
     display:flex; align-items:center; justify-content:center; font-weight:700; font-size:15px; color: var(--ink);
     flex-shrink:0; transition: transform .35s ease, box-shadow .35s ease, background .35s ease, border-color .35s ease;
     cursor:pointer; position:relative;
@@ -326,7 +327,7 @@
   }
   @media (max-width:480px){
     .table-el{ width:38px; height:38px; font-size:12px; }
-    .row{ gap:6px; }
+    .row{ --tw:38px; gap:6px; }
     .rows{ gap:12px; }
     .result-top{ flex-direction:column; align-items:flex-start; gap:12px; }
     .result-table{ align-self:stretch; }
@@ -396,7 +397,7 @@
       <div class="legend">
         <span><i style="background:var(--paper-2); border:2px solid var(--line);"></i> Boş masa</span>
         <span><i style="background:conic-gradient(var(--green-line) 50%, var(--paper-2) 0); border:2px solid var(--green-line);"></i> Masada bəzi qonaqlar gəlib</span>
-        <span><i style="background:linear-gradient(145deg,#3dbb82,#0e6b44); border:2px solid #d9b876;"></i> Masa tam doludur</span>
+        <span><i style="background:linear-gradient(145deg,#3dbb82,#0e6b44); border:2px solid #d9b876;"></i> Masadakı bütün qonaqlar gəlib</span>
         <span><i style="background:var(--gold);"></i> Axtarılan qonağın masası</span>
       </div>
     </div>
@@ -470,11 +471,6 @@
           <label>1-ci sıranın masa nömrələri soldan sağa (boş qalsa ardıcıl olur)</label>
           <input type="text" id="firstRowInput" placeholder="5,3,1,2,4,6" inputmode="numeric" style="width:100%;">
         </div>
-        <div style="margin-top:12px;">
-          <label>Hər sıradakı masada oturacaq sayı (vergüllə)</label>
-          <input type="text" id="rowSeatsInput" placeholder="8,8,10,10,10" inputmode="numeric" style="width:100%;">
-          <p class="desc" style="margin-top:6px;">Masadakı gələn qonaq sayı bu rəqəmə çatanda masa premium yaşıl olur. Siyahı sıralardan qısadırsa, sonuncu rəqəm qalan sıralara tətbiq olunur.</p>
-        </div>
         <button class="btn btn-primary" id="applySettingsBtn">Tətbiq et</button>
         <div class="msg" id="settingsMsg"></div>
         <p class="desc" style="margin-top:16px;">Məsələn <b>6,6,7,6,7</b> yazsan: 1-ci sırada 6, 2-ci sırada 6, 3-cü sırada 7, 4-cü sırada 6, 5-ci sırada 7 masa olar (cəmi 32). Yeni sıra əlavə etmək üçün sonuna vergül və rəqəm yaz.</p>
@@ -519,9 +515,8 @@ const layoutRef = doc(db, 'settings', 'layout');
 
 let guests = [];               // [{id, name, table, arrived}]
 const DEFAULT_ROW_COUNTS = [6, 6, 7, 6, 7];
-const DEFAULT_ROW_SEATS = [8, 8, 10, 10, 10];
 const DEFAULT_FIRST_ROW = [5, 3, 1, 2, 4, 6];
-let layout = { rowCounts: DEFAULT_ROW_COUNTS, rowSeats: DEFAULT_ROW_SEATS, firstRowOrder: DEFAULT_FIRST_ROW };
+let layout = { rowCounts: DEFAULT_ROW_COUNTS, firstRowOrder: DEFAULT_FIRST_ROW };
 let currentGuestId = null;     // guest currently shown in the result card
 
 const az = s => (s||'').toLocaleLowerCase('az').trim();
@@ -538,36 +533,6 @@ function rowCounts(){
   const rc = layout && Array.isArray(layout.rowCounts) ? layout.rowCounts.filter(n => Number.isInteger(n) && n > 0) : [];
   return rc.length ? rc : DEFAULT_ROW_COUNTS;
 }
-function rowSeats(){
-  const rs = layout && Array.isArray(layout.rowSeats) ? layout.rowSeats.filter(n => Number.isInteger(n) && n > 0) : [];
-  return rs.length ? rs : DEFAULT_ROW_SEATS;
-}
-function rowIndexOfTable(tableNumber){
-  const rc = rowCounts();
-  let left = tableNumber, row = 0;
-  while(row < rc.length - 1 && left > rc[row]){ left -= rc[row]; row++; }
-  return row;
-}
-function tableCapacity(tableNumber){
-  const rs = rowSeats();
-  const r = rowIndexOfTable(tableNumber);
-  return rs[Math.min(r, rs.length - 1)];
-}
-function updateTableStates(){
-  const arrivedBy = {};
-  guests.forEach(g => { if(g.arrived) arrivedBy[g.table] = (arrivedBy[g.table] || 0) + 1; });
-  document.querySelectorAll('.table-el').forEach(el => {
-    const n = parseInt(el.dataset.table, 10);
-    const cap = tableCapacity(n);
-    const a = arrivedBy[n] || 0;
-    const full = a >= cap;
-    el.classList.toggle('full', full);
-    el.classList.toggle('partial', !full && a > 0);
-    if(!full && a > 0) el.style.setProperty('--p', Math.round((a / cap) * 100));
-    else el.style.removeProperty('--p');
-    el.title = `Masa ${n}: ${a} / ${cap}`;
-  });
-}
 // Table numbers of a row, left to right. Row 1 may use a custom order (e.g. 5,3,1,2,4,6).
 function rowTables(r){
   const rc = rowCounts();
@@ -578,7 +543,31 @@ function rowTables(r){
     const ok = custom.length === rc[0] && [...custom].sort((a, b) => a - b).every((v, i) => v === i + 1);
     if(ok) return custom;
   }
-  return seq;
+  return r === 0 ? seq : seq.reverse();   // rows 2+ run right to left: 12..7, 19..13, 25..20, 32..26
+}
+function rowIndexOfTable(tableNumber){
+  const rc = rowCounts();
+  let left = tableNumber, row = 0;
+  while(row < rc.length - 1 && left > rc[row]){ left -= rc[row]; row++; }
+  return row;
+}
+function updateTableStates(){
+  const total = {}, arrivedBy = {};
+  guests.forEach(g => {
+    total[g.table] = (total[g.table] || 0) + 1;
+    if(g.arrived) arrivedBy[g.table] = (arrivedBy[g.table] || 0) + 1;
+  });
+  document.querySelectorAll('.table-el').forEach(el => {
+    const n = parseInt(el.dataset.table, 10);
+    const t = total[n] || 0;
+    const a = arrivedBy[n] || 0;
+    const full = t > 0 && a >= t;     // everyone assigned to this table has arrived
+    el.classList.toggle('full', full);
+    el.classList.toggle('partial', !full && a > 0);
+    if(!full && a > 0) el.style.setProperty('--p', Math.round((a / t) * 100));
+    else el.style.removeProperty('--p');
+    el.title = t ? `Masa ${n}: ${a} / ${t}` : `Masa ${n}`;
+  });
 }
 function totalTables(){ return rowCounts().reduce((a, b) => a + b, 0); }
 
@@ -598,10 +587,11 @@ function renderHall(){
   const container = document.getElementById('rowsContainer');
   container.innerHTML = '';
   const rc = rowCounts();
-  for(let r=0; r<rc.length; r++){
+  // Stage on top: row 1 is right under it.
+  for(let r = 0; r < rc.length; r++){
     const rowEl = document.createElement('div');
     rowEl.className = 'row';
-    rowTables(r).forEach(tableNum => {
+    rowTables(r).forEach((tableNum) => {
       const t = document.createElement('div');
       t.className = 'table-el';
       t.dataset.table = tableNum;
@@ -628,7 +618,7 @@ function openTableModal(tableNumber){
     listEl.innerHTML = '<div class="empty-note">Bu masaya hələ qonaq təyin edilməyib</div>';
   }else{
     const arrivedCount = list.filter(g=>g.arrived).length;
-    summaryEl.textContent = `${arrivedCount} / ${list.length} qonaq gəlib (masa tutumu: ${tableCapacity(num)})`;
+    summaryEl.textContent = `${arrivedCount} / ${list.length} qonaq gəlib`;
     listEl.innerHTML = list.map(g =>
       `<div class="tg-item ${g.arrived ? 'arrived' : 'pending'}"><span class="tg-dot"></span>${escapeHtml(g.name)}</div>`
     ).join('');
@@ -799,7 +789,6 @@ document.querySelectorAll('.tab').forEach(tab=>{
 
 function refreshAdmin(){
   document.getElementById('rowCountsInput').value = rowCounts().join(',');
-  document.getElementById('rowSeatsInput').value = rowSeats().join(',');
   document.getElementById('firstRowInput').value = rowTables(0).join(',');
   document.getElementById('guestCount').textContent = guests.length;
   const listEl = document.getElementById('guestListEl');
@@ -891,14 +880,12 @@ document.getElementById('applySettingsBtn').addEventListener('click', async ()=>
   const msg = document.getElementById('settingsMsg');
   const counts = document.getElementById('rowCountsInput').value.split(/[,;\s]+/).filter(Boolean).map(x => parseInt(x, 10));
   if(counts.length === 0 || counts.length > 30 || counts.some(n => !Number.isInteger(n) || n < 1 || n > 20)){ msg.textContent = 'Düzgün yazın, məsələn: 6,6,7,6,7'; msg.className = 'msg err'; return; }
-  const seats = document.getElementById('rowSeatsInput').value.split(/[,;\s]+/).filter(Boolean).map(x => parseInt(x, 10));
-  if(seats.length === 0 || seats.length > 30 || seats.some(n => !Number.isInteger(n) || n < 1 || n > 50)){ msg.textContent = 'Oturacaq sayını düzgün yazın, məsələn: 8,8,10,10,10'; msg.className = 'msg err'; return; }
   const first = document.getElementById('firstRowInput').value.split(/[,;\s]+/).filter(Boolean).map(x => parseInt(x, 10));
   if(first.length && (first.length !== counts[0] || [...first].sort((a, b) => a - b).some((v, i) => v !== i + 1))){
     msg.textContent = `1-ci sıra üçün 1-dən ${counts[0]}-ə qədər bütün nömrələri bir dəfə yazın, məsələn: 5,3,1,2,4,6`; msg.className = 'msg err'; return;
   }
   try{
-    await setDoc(layoutRef, { rowCounts: counts, rowSeats: seats, firstRowOrder: first });
+    await setDoc(layoutRef, { rowCounts: counts, firstRowOrder: first });
     msg.textContent = `Tətbiq olundu — ${counts.length} sıra, ümumi ${counts.reduce((a, b) => a + b, 0)} masa.`;
     msg.className = 'msg ok';
   }catch(e){
@@ -959,7 +946,7 @@ onSnapshot(layoutRef, (snap) => {
   try{
     const snap = await getDocs(collection(db, 'settings'));
     const hasLayout = snap.docs.some(d => d.id === 'layout');
-    if(!hasLayout){ await setDoc(layoutRef, { rowCounts: DEFAULT_ROW_COUNTS, rowSeats: DEFAULT_ROW_SEATS, firstRowOrder: DEFAULT_FIRST_ROW }); }
+    if(!hasLayout){ await setDoc(layoutRef, { rowCounts: DEFAULT_ROW_COUNTS, firstRowOrder: DEFAULT_FIRST_ROW }); }
   }catch(e){ console.error('Layout seed check failed', e); }
 })();
 
