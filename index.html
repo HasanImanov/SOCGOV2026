@@ -6,7 +6,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<meta name="app-version" content="2026-10-23-8">
+<meta name="app-version" content="2026-10-23-10">
 <title>Xankəndi Konqres Mərkəzi — Qonaq Yerləşdirmə</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -176,8 +176,11 @@
   }
   .btn-arrive:hover{ opacity:0.9; }
   .btn-undo{
-    border:none; background:none; color: var(--ink-soft); font-size:12.5px; cursor:pointer; text-decoration:underline;
+    border:1.5px solid var(--line); background: var(--card-bg); color: var(--ink); font-size:13.5px; font-weight:600;
+    cursor:pointer; padding:8px 14px; border-radius: var(--radius-s); font-family:'Inter',sans-serif;
   }
+  .btn-undo:hover{ border-color: var(--gold); }
+  .arrive-row .btn-undo::before{ content:'↩ '; }
 
   .not-found{
     margin: 16px 20px 0; max-width:600px; margin-left:auto; margin-right:auto;
@@ -426,7 +429,7 @@
 
       <div id="adminContent" style="display:none;">
       <div style="text-align:right; margin:-10px 0 10px;">
-        <button class="btn-undo" id="logoutBtn">çıxış et</button>
+        <button class="btn-undo" id="logoutBtn" style="border:none;background:none;text-decoration:underline;font-size:12.5px;padding:0;color:var(--ink-soft);">çıxış et</button>
       </div>
       <div class="tabs">
         <div class="tab active" data-tab="add">Tək əlavə et</div>
@@ -445,7 +448,8 @@
       </div>
 
       <div class="tab-content" data-tab-content="bulk">
-        <p class="desc" style="margin-top:-8px;">Hər sətirdə: <strong>Ad Soyad; Masa nömrəsi</strong> — məsələn:<br>Həsən Əliyev; 12<br>Aynur Məmmədova; 7</p>
+        <p class="desc" style="margin-top:-8px;">Hər sətirdə: <strong>Ad Soyad; Masa nömrəsi</strong> — məsələn:<br>Həsən Əliyev; 12<br>Aynur Məmmədova; 7<br><br>Və ya <strong>JSON</strong> yapışdır / fayl seç: <code>[{"name":"Ad Soyad","table":12}]</code></p>
+        <div style="margin-bottom:10px;"><input type="file" id="jsonFile" accept=".json,application/json,.txt"></div>
         <textarea id="bulkText" placeholder="Ad Soyad; Masa nömrəsi"></textarea>
         <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
           <button class="btn btn-primary" id="bulkAddBtn">Siyahını əlavə et</button>
@@ -579,6 +583,7 @@ function locationDescription(tableNumber){
   const col = rowTables(row).indexOf(tableNumber) + 1;
   const rows = rc.length;
   const r = row + 1;
+  const zone = r <= Math.ceil(rows/3) ? 'səhnəyə yaxın' : (r >= rows - Math.ceil(rows/3) + 1 ? 'arxa hissə' : 'orta hissə');
   return `${r}-ci sıra, soldan ${col}-ci masa — ${zone}`;
 }
 
@@ -829,6 +834,15 @@ document.getElementById('addGuestBtn').addEventListener('click', async ()=>{
 });
 
 function parseBulk(text){
+  const trimmed = text.trim();
+  if(trimmed.startsWith('[') || trimmed.startsWith('{')){
+    try{
+      const data = JSON.parse(trimmed);
+      const arr = Array.isArray(data) ? data : (Array.isArray(data.guests) ? data.guests : []);
+      return arr.map(g => ({ name: String(g.name || '').replace(/\s+/g, ' ').trim(), table: parseInt(g.table, 10) }))
+                .filter(g => g.name && g.table > 0);
+    }catch(e){ return []; }
+  }
   return text.split('\n').map(line=>line.trim()).filter(Boolean).map(line=>{
     const parts = line.split(/;|,(?=[^,]*$)/).map(p=>p.trim());
     let name, table;
@@ -837,14 +851,35 @@ function parseBulk(text){
   }).filter(Boolean);
 }
 
+async function commitInChunks(ops){
+  for(let i = 0; i < ops.length; i += 400){
+    const batch = writeBatch(db);
+    ops.slice(i, i + 400).forEach(fn => fn(batch));
+    await batch.commit();
+  }
+}
+const newGuestOp = (p) => { const ref = doc(guestsCol); return (batch) => batch.set(ref, { name: p.name, table: p.table, arrived: false, arrivedAt: null, createdAt: serverTimestamp() }); };
+
+document.getElementById('jsonFile').addEventListener('change', (e) => {
+  const f = e.target.files && e.target.files[0];
+  if(!f) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    document.getElementById('bulkText').value = String(reader.result || '');
+    const n = parseBulk(document.getElementById('bulkText').value).length;
+    const msg = document.getElementById('bulkMsg');
+    msg.textContent = n ? `Fayl oxundu — ${n} qonaq tapıldı. İndi "əlavə et" və ya "əvəz et" düyməsinə basın.` : 'Faylda düzgün qonaq tapılmadı.';
+    msg.className = 'msg ' + (n ? 'ok' : 'err');
+  };
+  reader.readAsText(f, 'utf-8');
+});
+
 document.getElementById('bulkAddBtn').addEventListener('click', async ()=>{
   const parsed = parseBulk(document.getElementById('bulkText').value);
   const msg = document.getElementById('bulkMsg');
-  if(parsed.length === 0){ msg.textContent = 'Düzgün sətir tapılmadı. Format: Ad Soyad; Masa nömrəsi'; msg.className = 'msg err'; return; }
+  if(parsed.length === 0){ msg.textContent = 'Düzgün qonaq tapılmadı. Format: Ad Soyad; Masa nömrəsi və ya JSON'; msg.className = 'msg err'; return; }
   try{
-    const batch = writeBatch(db);
-    parsed.forEach(p => { const ref = doc(guestsCol); batch.set(ref, { name: p.name, table: p.table, arrived: false, arrivedAt: null, createdAt: serverTimestamp() }); });
-    await batch.commit();
+    await commitInChunks(parsed.map(newGuestOp));
     msg.textContent = `${parsed.length} qonaq əlavə olundu.`;
     msg.className = 'msg ok';
     document.getElementById('bulkText').value = '';
@@ -861,10 +896,9 @@ document.getElementById('bulkReplaceBtn').addEventListener('click', async ()=>{
   if(parsed.length === 0){ msg.textContent = 'Düzgün sətir tapılmadı. Format: Ad Soyad; Masa nömrəsi'; msg.className = 'msg err'; return; }
   try{
     const snap = await getDocs(guestsCol);
-    const batch = writeBatch(db);
-    snap.forEach(d => batch.delete(d.ref));
-    parsed.forEach(p => { const ref = doc(guestsCol); batch.set(ref, { name: p.name, table: p.table, arrived: false, arrivedAt: null, createdAt: serverTimestamp() }); });
-    await batch.commit();
+    const ops = snap.docs.map(d => (batch) => batch.delete(d.ref));
+    parsed.forEach(p => ops.push(newGuestOp(p)));
+    await commitInChunks(ops);
     msg.textContent = `Siyahı əvəz olundu — ${parsed.length} qonaq.`;
     msg.className = 'msg ok';
     document.getElementById('bulkText').value = '';
