@@ -6,7 +6,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<meta name="app-version" content="2026-10-23-10">
+<meta name="app-version" content="2026-10-23-11">
 <title>Xankəndi Konqres Mərkəzi — Qonaq Yerləşdirmə</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -216,6 +216,11 @@
     border-color: var(--green);
     color: var(--green);
   }
+  .table-el.media{
+    background: repeating-linear-gradient(135deg, var(--paper-2) 0 6px, rgba(189,151,87,0.18) 6px 12px);
+    border: 2px dashed var(--gold); color: var(--ink-soft); cursor: default; font-family:'Fraunces', serif; font-size:17px;
+  }
+  .table-el.media:hover{ border-color: var(--gold); }
   .table-el.partial{
     background: conic-gradient(var(--green-line) calc(var(--p) * 1%), var(--paper-2) 0);
     border-color: var(--green-line);
@@ -402,6 +407,7 @@
         <span><i style="background:conic-gradient(var(--green-line) 50%, var(--paper-2) 0); border:2px solid var(--green-line);"></i> Masada bəzi qonaqlar gəlib</span>
         <span><i style="background:linear-gradient(145deg,#3dbb82,#0e6b44); border:2px solid #d9b876;"></i> Masadakı bütün qonaqlar gəlib</span>
         <span><i style="background:var(--gold);"></i> Axtarılan qonağın masası</span>
+        <span><i style="background:var(--paper-2); border:2px dashed var(--gold);"></i> M — media masası</span>
       </div>
     </div>
   </div>
@@ -520,6 +526,7 @@ const layoutRef = doc(db, 'settings', 'layout');
 let guests = [];               // [{id, name, table, arrived}]
 const DEFAULT_ROW_COUNTS = [6, 6, 7, 6, 7];
 const DEFAULT_FIRST_ROW = [5, 3, 1, 2, 4, 6];
+const MEDIA_TABLES = [20, 26, 27];   // media masaları: qonaq oturmur, plandada "M" yazılır
 let layout = { rowCounts: DEFAULT_ROW_COUNTS, firstRowOrder: DEFAULT_FIRST_ROW };
 let currentGuestId = null;     // guest currently shown in the result card
 
@@ -563,6 +570,7 @@ function updateTableStates(){
   });
   document.querySelectorAll('.table-el').forEach(el => {
     const n = parseInt(el.dataset.table, 10);
+    if(MEDIA_TABLES.includes(n)) return;
     const t = total[n] || 0;
     const a = arrivedBy[n] || 0;
     const full = t > 0 && a >= t;     // everyone assigned to this table has arrived
@@ -599,8 +607,10 @@ function renderHall(){
       const t = document.createElement('div');
       t.className = 'table-el';
       t.dataset.table = tableNum;
-      t.textContent = tableNum;
-      t.addEventListener('click', ()=> openTableModal(t.dataset.table));
+      const isMedia = MEDIA_TABLES.includes(tableNum);
+      t.textContent = isMedia ? 'M' : tableNum;
+      if(isMedia){ t.classList.add('media'); t.title = `Media masası (Masa ${tableNum})`; }
+      if(!isMedia) t.addEventListener('click', ()=> openTableModal(t.dataset.table));
       rowEl.appendChild(t);
     });
     container.appendChild(rowEl);
