@@ -579,7 +579,6 @@ function locationDescription(tableNumber){
   const col = rowTables(row).indexOf(tableNumber) + 1;
   const rows = rc.length;
   const r = row + 1;
-  const zone = r <= Math.ceil(rows/3) ? 'səhnəyə yaxın' : (r >= rows - Math.ceil(rows/3) + 1 ? 'arxa hissə' : 'orta hissə');
   return `${r}-ci sıra, soldan ${col}-ci masa — ${zone}`;
 }
 
